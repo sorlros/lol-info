@@ -4,30 +4,52 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { IoMdSearch } from "react-icons/io";
 
+import { useDispatch, useSelector } from 'react-redux';
+import { selectPuuid, setSummoner } from "@/features/summonerSlice";
+
 export const SummonerName = () => {
   const [inputValue, setInputValue] = useState("");
-  // const [gameName, setGameName] = useState("");
-  // const [tagLine, setTagLine] = useState("");
-  const [result, setResult] = useState(null);
   const [error, setError] = useState("");
+
+  const dispatch = useDispatch();
+  // const puuid = useSelector(selectPuuid);
   
   const handleSearch = async () => {
     try {
       const [gameName, tagLine] = inputValue.split("#");
+
       if (!gameName || !tagLine) {
         setError(`소환사명 혹은 태그ID가 일치하지 않습니다. 유효한 형식은 "소환사명#태그ID" 입니다.`);
-        setResult(null);
         return;
       }
 
-      const response = await fetch(`/api/account?gameName=${gameName}&tagLine=${tagLine}`);
+      const response = await fetch(`/api/account/${gameName}/${tagLine}`, {
+        method: "GET"
+      });
+
       if (!response.ok) {
         throw new Error("fetched data 오류");
       }
+
       const data = await response.json();
-      console.log("data", data);
+      const getSummoner = dispatch(setSummoner(data));
+
+      if (getSummoner.payload) {
+        console.log("puuid", getSummoner.payload.puuid);
+        const puuid = getSummoner.payload.puuid;
+        const response = await fetch(`/api/matches/${puuid}`, {
+          method: "GET"
+        })
+
+        if (!response.ok) {
+          throw new Error("matches fetching 오류");
+        }
+
+        const data = await response.json();
+        console.log("matches", data);
+      }
+      // console.log("data", data);
     } catch (error) {
-      setResult(null);
       setError("오류 발생");
     }
   }
