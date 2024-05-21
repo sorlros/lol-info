@@ -4,6 +4,7 @@ import "./globals.css";
 
 import { store } from "@/redux/store";
 import Providers from "@/redux/provider";
+import { Toaster } from "sonner";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -22,6 +23,7 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <Providers>
+        <Toaster />
         <body className={inter.className}>{children}</body>
       </Providers>
     </html>

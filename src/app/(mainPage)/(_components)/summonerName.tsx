@@ -6,13 +6,14 @@ import { IoMdSearch } from "react-icons/io";
 
 import { useDispatch, useSelector } from 'react-redux';
 import { selectPuuid, setSummoner } from "@/features/summonerSlice";
+import { useRouter } from "next/navigation";
 
 export const SummonerName = () => {
   const [inputValue, setInputValue] = useState("");
   const [error, setError] = useState("");
 
   const dispatch = useDispatch();
-  // const puuid = useSelector(selectPuuid);
+  const router = useRouter();
   
   const handleSearch = async () => {
     try {
@@ -47,6 +48,7 @@ export const SummonerName = () => {
 
         const data = await response.json();
         console.log("matches", data);
+        router.push(`/detail-info/${puuid}`)
       }
       // console.log("data", data);
     } catch (error) {
@@ -60,7 +62,7 @@ export const SummonerName = () => {
         <input 
           className="flex-grow h-[50px] justify-start rounded-lg pr-[50px] border pl-[20px]" 
           type="text"
-          placeholder="챔피언 혹은 Riot ID 검색"
+          placeholder="챔피언 혹은 Riot ID 검색 ex)hide on bush#kr1"
           onChange={(e) => setInputValue(e.target.value)}
         />
 

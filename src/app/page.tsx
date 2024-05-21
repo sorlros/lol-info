@@ -1,5 +1,5 @@
-import { Header } from "@/pages/(mainPage)/(_components)/header";
-import { SummonerName } from "@/pages/(mainPage)/(_components)/summonerName";
+import { Header } from "@/components/header";
+import { SummonerName } from "@/app/(mainPage)/(_components)/summonerName";
 
 export default function Home() {
   return (
