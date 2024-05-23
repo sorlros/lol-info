@@ -3,9 +3,9 @@ import { SummonerName } from "@/app/(mainPage)/(_components)/summonerName";
 
 export default function Home() {
   return (
-    <main className="flex w-full min-h-screen flex-col items-center bg-black">
+    <div className="flex w-full min-h-screen flex-col items-center bg-black">
       <Header />
       <SummonerName />
-    </main>
+    </div>
   );
 }

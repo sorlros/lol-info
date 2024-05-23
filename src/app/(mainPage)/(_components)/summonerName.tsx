@@ -36,7 +36,8 @@ export const SummonerName = () => {
       const getSummoner = dispatch(setSummoner(data));
 
       if (getSummoner.payload) {
-        console.log("puuid", getSummoner.payload.puuid);
+        console.log("puuid", getSummoner.payload);
+        
         const puuid = getSummoner.payload.puuid;
         const response = await fetch(`/api/matches/${puuid}`, {
           method: "GET"

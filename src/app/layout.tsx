@@ -24,7 +24,9 @@ export default function RootLayout({
     <html lang="ko">
       <Providers>
         <Toaster />
-        <body className={inter.className}>{children}</body>
+        <body className={inter.className}>
+          {children}
+        </body>
       </Providers>
     </html>
   );

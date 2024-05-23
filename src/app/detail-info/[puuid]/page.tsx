@@ -1,56 +1,14 @@
 "use client";
 
+import { Match } from '@/types/types';
 import { useRouter, usePathname } from 'next/navigation';
 import { stringify } from 'querystring';
 import { useEffect, useId, useState } from 'react';
 import { toast } from 'sonner';
+import { UserChampInfo } from '../(_conponents)/userChampInfo';
+import { RecentGames } from '../(_conponents)/recentGames';
+import { TopInfo } from '../(_conponents)/topInfo';
 
-// interface 별도로 저장할 것
-interface Match {
-  metadata: MetaData;
-  info: Info
-}
-interface MetaData {
-  dataVersion: string;
-  matchId: string;
-  participants: Array<string>;
-}
-
-interface Participant {
-  assists: number;
-  bountyLevel: number;
-  champExperience: number;
-  championName: string;
-  damageDealtToTurrets: number;
-  deaths: number;
-  detectorWardsPlaced: number;
-  doubleKills: number;
-  goldEarned: number;
-  individualPosition: string;
-  kills: number;
-  lane: string;
-  magicDamageDealtToChampions: number;
-  magicDamageTaken: number;
-  pentaKills: number;
-  physicalDamageDealtToChampions: number;
-  physicalDamageTaken: number;
-  quadraKills: number;
-  role: string;
-  summonerName: string;
-  timePlayed: number;
-  totalDamageDealtToChampions: number;
-  totalDamageTaken: number;
-  totalHeal: number;
-  tripleKills: number;
-  turretKills: number;
-  visionScore: number;
-  wardsKilled: number;
-}
-interface Info {
-  gameMode: string;
-  gameType: string;
-  participants: Array<Participant>
-}
 const DetailPage = () => {
   const [matchIds, setMatchIds] = useState<string[]>([]);
   const [matchInfos, setMatchInfos] = useState<Match[]>([]);
@@ -102,7 +60,6 @@ const DetailPage = () => {
           })
         );
         setMatchInfos(prevMatchInfos => [...prevMatchInfos, ...newDataArray]); 
-        // console.log("INFOS", matchInfos)
       } catch (error) {
         console.error("error fetching match info", error);
       }
@@ -113,8 +70,12 @@ const DetailPage = () => {
     }
   }, [matchIds]);
 
+  useEffect(() => {
+    console.log("INFOS", matchInfos)
+  }, [matchInfos])
   return (
-    <div>
+    <>
+    {/* <div>
       {matchInfos.map((matchInfo, index) => (
         <div key={index}>
           <h2>Match {index + 1}</h2>
@@ -125,16 +86,34 @@ const DetailPage = () => {
             {matchInfo.info.participants.map((participant, idx) => (
               <li key={idx}>
                 <p>Summoner Name: {participant.summonerName}</p>
+                <p>게임시간: {participant.timePlayed}</p>
                 <p>Champion: {participant.championName}</p>
                 <p>Kills: {participant.kills}</p>
                 <p>Deaths: {participant.deaths}</p>
                 <p>Assists: {participant.assists}</p>
+                <p>총 피해량: {participant.totalDamageDealtToChampions}</p>
+                <p>더블킬: {participant.doubleKills}</p>
+                <p>트리플킬: {participant.tripleKills}</p>
+                <p>쿼드라킬: {participant.quadraKills}</p>
+                <p>팬타킬: {participant.pentaKills}</p>
+                <p>시야점수: {participant.visionScore}</p>
+                <p>현상금: {participant.challenges.bountyGold}</p>
+                <p>분당 데미지: {participant.challenges.damagePerMinute}</p>
+                <p>분당 얻은 골드: {participant.challenges.goldPerMinute}</p>
+                <p>KDA: {participant.challenges.kda}</p>
+                <p>첫 10분 미니언 처치수: {participant.challenges.laneMinionsFirst10Minutes}</p>
               </li>
             ))}
           </ul>
         </div>
       ))}
+    </div> */}
+
+    <div className="flex items-center justify-center w-2/3 h-full bg-red-900">
+      <RecentGames />
+      <UserChampInfo />
     </div>
+    </>
   )
 }
 
