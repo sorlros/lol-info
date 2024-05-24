@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 
-import { store } from "@/redux/store";
 import Providers from "@/redux/provider";
 import { Toaster } from "sonner";
+import { ClientOnly } from "@/components/provider/clientOnly";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,13 +21,15 @@ export default function RootLayout({
   
 
   return (
-    <html lang="ko">
-      <Providers>
-        <Toaster />
-        <body className={inter.className}>
-          {children}
-        </body>
-      </Providers>
+    <html lang="ko">   
+      <body className={inter.className}>
+        <ClientOnly>
+          <Providers>
+          <Toaster />
+            <main className="w-full h-full">{children}</main>
+          </Providers>
+        </ClientOnly>
+      </body>
     </html>
   );
 }

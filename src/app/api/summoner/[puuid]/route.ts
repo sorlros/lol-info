@@ -1,7 +1,8 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function GET({ params }: { params: { puuid: string }}) {
+export async function GET(req: NextRequest, { params }: { params: { puuid: string }}) {
   const { puuid } = params;
+  console.log("puuid", puuid)
 
   if (!puuid || typeof puuid !== "string") {
     return NextResponse.json({error: "puuid 오류"});

@@ -12,9 +12,9 @@ import { TopInfo } from '../(_conponents)/topInfo';
 const DetailPage = () => {
   const [matchIds, setMatchIds] = useState<string[]>([]);
   const [matchInfos, setMatchInfos] = useState<Match[]>([]);
+  const [puuid, setPuuid] = useState<string>("");
   
   const pathname = usePathname();
-  const id = useId();
 
   useEffect(() => {
     const fetchMatchIds = async (puuid: string) => {
@@ -37,6 +37,7 @@ const DetailPage = () => {
     if (pathname) {
       const parts = pathname.split("/");
       const puuid = parts.pop();
+      setPuuid(puuid as string);
 
       if (puuid) {
         fetchMatchIds(puuid);
@@ -108,11 +109,16 @@ const DetailPage = () => {
         </div>
       ))}
     </div> */}
-
-    <div className="flex items-center justify-center w-2/3 h-full bg-red-900">
-      <RecentGames />
-      <UserChampInfo />
+    <div className="flex flex-col min-w-full min-h-full">
+      <TopInfo puuid={puuid}/>
+      <div className="flex items-center justify-center w-full h-full bg-[#282830] mt-2">
+        <div className="flex w-2/3 h-full space-x-2">
+          <RecentGames />
+          <UserChampInfo />
+        </div>
+      </div>
     </div>
+    
     </>
   )
 }
