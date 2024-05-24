@@ -21,16 +21,11 @@ interface SummonerDataProps {
 }
 
 export const TopInfo = ({puuid}: TopInfoProps) => {
-  // const summonerInfo = useSelector((state: RootState) => state.summoner)
-  // const puuid = summonerInfo.puuid;
-  // const summonerName = summonerInfo.summonerName;
-
   const [summonerData, setSummonerData] = useState<SummonerDataProps>();
 
   useEffect(() => {
     const fetchSummonerInfo = async (puuid: string) => {
       try {
-        console.log("Fetching data for PUUID:", puuid);
         const response = await fetch(`/api/summoner/${puuid}`, {
           method: "GET",
         });
@@ -40,9 +35,7 @@ export const TopInfo = ({puuid}: TopInfoProps) => {
         }
 
         const data = await response.json();
-        // console.log("data", data);
         setSummonerData(data);
-        // console.log("summonerData", summonerData);
       } catch (error) {
         // toast.error("소환사 정보를 불러오지 못했습니다.");
         console.error("소환사 정보를 불러오지 못했습니다.");
@@ -56,7 +49,7 @@ export const TopInfo = ({puuid}: TopInfoProps) => {
 
   useEffect(() => {
     if (summonerData) {
-      console.log("summonerData", summonerData); // summonerData 업데이트 후 로그
+      console.log("summonerData", summonerData);
     }
   }, [summonerData]);
 
