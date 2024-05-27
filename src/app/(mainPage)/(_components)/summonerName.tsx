@@ -24,7 +24,7 @@ export const SummonerName = () => {
         return;
       }
 
-      const response = await fetch(`/api/account/${gameName}/${tagLine}`, {
+      const response = await fetch(`/api/account/by-name/${gameName}/${tagLine}`, {
         method: "GET"
       });
 

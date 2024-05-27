@@ -113,8 +113,9 @@ const DetailPage = () => {
       <TopInfo puuid={puuid}/>
       <div className="flex items-center justify-center w-full h-full bg-[#282830] mt-2">
         <div className="flex w-2/3 h-full space-x-2">
-          <RecentGames />
+          
           <UserChampInfo />
+          <RecentGames matchInfos={matchInfos}/>
         </div>
       </div>
     </div>

@@ -1,6 +1,6 @@
 export const UserChampInfo = () => {
   return (
-    <div className="flex w-2/3 h-[500px] rounded-lg bg-[#28344E]">
+    <div className="flex w-1/3 min-h-screen rounded-lg bg-[#28344E]">
       right
     </div>
   )
