@@ -1,13 +1,16 @@
-import { Info, Match, MetaData } from "@/types/types";
+import { Info, Match, MetaData, Participant } from "@/types/types";
 import { useEffect, useState } from "react";
 import Image from 'next/image';
 
 interface RecentGamesProps {
-  matchInfos: Match[]
+  matchInfos: Match[];
+  puuid: string;
 }
 
-export const RecentGames = ({matchInfos}: RecentGamesProps) => {
+export const RecentGames = ({matchInfos, puuid}: RecentGamesProps) => {
   const [isOpen, setIsOpen] = useState();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [myMatchInfoData, setMyMatchInfoData] = useState<Participant[]>([]);
 
   useEffect(() => {
     if (matchInfos.length > 0 && matchInfos[0].info.participants.length > 0) {
@@ -15,12 +18,28 @@ export const RecentGames = ({matchInfos}: RecentGamesProps) => {
     }
   }, [matchInfos]);
 
+  function findMyData(matchInfo: Match, puuid: string): Participant | undefined  {
+    return matchInfo.info.participants.find(participant => participant.puuid === puuid);
+  }
+
+  useEffect(() => {
+    setIsLoading(true);
+    const data = matchInfos.map(matchInfo => findMyData(matchInfo, puuid)) as Participant[];
+    setMyMatchInfoData(data);
+    console.log("INFO", myMatchInfoData);
+    setIsLoading(false);
+  }, [matchInfos, puuid]);
+
+  if (!myMatchInfoData.length) {
+    return <div>No match data available</div>;
+  }
+
   return (
     <div className="flex flex-col w-2/3 min-h-screen rounded-lg bg-[#28344E]">
-      {matchInfos.map((matchInfo, idx) => (
+      {matchInfos.map((matchInfo: Match, idx: number) => (
         <div key={idx} className="flex w-full h-[96px] rounded-lg py-[4px] mb-4">
           <div className="flex flex-col w-[110px] h-full">
-            <span>{matchInfo.info.gameMode}</span>
+            <span>{matchInfo.info.gameMode === "CLASSIC" ? "솔랭" : "아직미구현"}</span>
             <span>몇일전</span>
             <span>승패</span>
             <span>게임 시간</span>
@@ -29,8 +48,9 @@ export const RecentGames = ({matchInfos}: RecentGamesProps) => {
             <div className="flex w-full h-4/5">
               <div>
                 <Image 
-                  src={`https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/${matchInfo.info.participants[0].championName}.png`}
+                  src={`https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/${myMatchInfoData[idx].championName}.png`}
                   alt="챔피언 이미지"
+                  style={{ width: "auto", height: "auto" }}
                   width={48}
                   height={48}
                 />
@@ -58,7 +78,92 @@ export const RecentGames = ({matchInfos}: RecentGamesProps) => {
             
             <div className="flex flex-col w-full h-1/5">
               <div className="flex">
-                <div>아이템 목록 & 장신구</div>
+                <div className="flex w-full h-full gap-x-1">
+                  <Image 
+                    src={
+                      myMatchInfoData[idx].item0 === 0
+                      ? 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60qxkwAAAABJRU5ErkJggg=='
+                      : `https://ddragon.leagueoflegends.com/cdn/14.10.1/img/item/${myMatchInfoData[idx].item0}.png`
+                    } 
+                    alt="아이템 이미지"
+                    width={22}
+                    height={22}
+                    style={{ width: "22px", height: "22px" }}
+                    layout="fixed"
+                  />
+                  <Image 
+                    src={
+                      myMatchInfoData[idx].item1 === 0
+                      ? 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60qxkwAAAABJRU5ErkJggg=='
+                      : `https://ddragon.leagueoflegends.com/cdn/14.10.1/img/item/${myMatchInfoData[idx].item1}.png`
+                    } 
+                    alt="아이템 이미지"
+                    width={22}
+                    height={22}
+                    style={{ width: "22px", height: "22px" }}
+                    layout="fixed"
+                  />
+                  <Image
+                    src={
+                      myMatchInfoData[idx].item2 === 0
+                      ? 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60qxkwAAAABJRU5ErkJggg=='
+                      : `https://ddragon.leagueoflegends.com/cdn/14.10.1/img/item/${myMatchInfoData[idx].item2}.png`
+                    } 
+                    alt="아이템 이미지"
+                    width={22}
+                    height={22}
+                    style={{ width: "22px", height: "22px" }}
+                    layout="fixed"
+                  />
+                  <Image
+                    src={
+                      myMatchInfoData[idx].item3 === 0
+                      ? 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60qxkwAAAABJRU5ErkJggg=='
+                      : `https://ddragon.leagueoflegends.com/cdn/14.10.1/img/item/${myMatchInfoData[idx].item3}.png`
+                    } 
+                    alt="아이템 이미지"
+                    width={22}
+                    height={22}
+                    style={{ width: "22px", height: "22px" }}
+                    layout="fixed"
+                  />
+                  <Image
+                    src={
+                      myMatchInfoData[idx].item4 === 0
+                      ? 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60qxkwAAAABJRU5ErkJggg=='
+                      : `https://ddragon.leagueoflegends.com/cdn/14.10.1/img/item/${myMatchInfoData[idx].item4}.png`
+                    } 
+                    alt="아이템 이미지"
+                    width={22}
+                    height={22}
+                    style={{ width: "22px", height: "22px" }}
+                    layout="fixed"
+                  />
+                  <Image
+                    src={
+                      myMatchInfoData[idx].item5 === 0
+                      ? 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60qxkwAAAABJRU5ErkJggg=='
+                      : `https://ddragon.leagueoflegends.com/cdn/14.10.1/img/item/${myMatchInfoData[idx].item5}.png`
+                    } 
+                    alt="아이템 이미지"
+                    width={22}
+                    height={22}
+                    style={{ width: "22px", height: "22px" }}
+                    layout="fixed"
+                  />
+                  <Image
+                    src={
+                      myMatchInfoData[idx].item6 === 0
+                      ? 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60qxkwAAAABJRU5ErkJggg=='
+                      : `https://ddragon.leagueoflegends.com/cdn/14.10.1/img/item/${myMatchInfoData[idx].item6}.png`
+                    } 
+                    alt="아이템 이미지"
+                    width={22}
+                    height={22}
+                    style={{ width: "22px", height: "22px" }}
+                    layout="fixed"
+                  />
+                </div>
                 <div>최대킬 , 스코어</div>
               </div>
             </div>
@@ -78,7 +183,7 @@ export const RecentGames = ({matchInfos}: RecentGamesProps) => {
       
 
       
-      <div className="py-2">
+      {/* <div className="py-2">
         {matchInfos.map((matchInfo, index) => (
           <div key={index}> 
             <h2>Match {index + 1}</h2>
@@ -110,7 +215,7 @@ export const RecentGames = ({matchInfos}: RecentGamesProps) => {
             </ul>
           </div>
         ))}
-      </div>
+      </div> */}
     </div>
   )
 }

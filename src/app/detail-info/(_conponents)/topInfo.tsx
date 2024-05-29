@@ -93,10 +93,14 @@ export const TopInfo = ({puuid}: TopInfoProps) => {
         <div className="relative w-[100px] h-[100px]">
           <Image 
             src={`https://ddragon.leagueoflegends.com/cdn/14.10.1/img/profileicon/${summonerData?.profileIconId}.png`}
-            layout="fill"
+            // objectFit="cover"
+            width={100}
+            height={100}
+            style={{ width: "auto", height: "auto" }}
             // objectFit="contain"
             alt="소환사 아이콘"
             className="rounded-lg"
+            priority
           />
         </div>
         <div className="w-[700px] h-full pl-4 text-2xl">

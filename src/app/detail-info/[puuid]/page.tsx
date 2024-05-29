@@ -60,7 +60,7 @@ const DetailPage = () => {
             return data;
           })
         );
-        setMatchInfos(prevMatchInfos => [...prevMatchInfos, ...newDataArray]); 
+        setMatchInfos(newDataArray);
       } catch (error) {
         console.error("error fetching match info", error);
       }
@@ -115,7 +115,7 @@ const DetailPage = () => {
         <div className="flex w-2/3 h-full space-x-2">
           
           <UserChampInfo />
-          <RecentGames matchInfos={matchInfos}/>
+          <RecentGames matchInfos={matchInfos} puuid={puuid}/>
         </div>
       </div>
     </div>
