@@ -1,6 +1,8 @@
-import { Info, Match, MetaData, Participant } from "@/types/types";
+import { Info, Match, MetaData, Participant, Perks, SpellMapping } from "@/types/types";
 import { useEffect, useState } from "react";
 import Image from 'next/image';
+import runeInfoData from "@/json/runeInfo.json";
+
 
 interface RecentGamesProps {
   matchInfos: Match[];
@@ -30,6 +32,63 @@ export const RecentGames = ({matchInfos, puuid}: RecentGamesProps) => {
     setIsLoading(false);
   }, [matchInfos, puuid]);
 
+  const calculateDaysAgo = (gameCreation: number) => {
+    const now = new Date().getTime();
+    const daysAgo = Math.floor((now - gameCreation) / (1000 * 60 * 60 * 24));
+    return `${daysAgo}일 전`
+  }
+
+  const spellMapping: SpellMapping = {
+    21: "SummonerBarrier",
+    1: "SummonerBoost",
+    14: "SummonerDot",
+    3: "SummonerExhaust",
+    4: "SummonerFlash",
+    6: "SummonerHaste",
+    7: "SummonerHeal",
+    13: "SummonerMana",
+    30: "SummonerPoroRecall",
+    31: "SummonerPoroThrow",
+    11: "SummonerSmite",
+    39: "SummonerSnowURFSnowball_Mark",
+    32: "SummonerSnowball",
+    12: "SummonerTeleport",
+    54: "Summoner_UltBookPlaceholder",
+    55: "Summoner_UltBookSmitePlaceholder"
+  };
+
+  const getSpellImageUrl = (spellId: number): string => {
+    const spellName = spellMapping[spellId];
+    return `https://ddragon.leagueoflegends.com/cdn/14.10.1/img/spell/${spellName}.png`;
+  };
+
+  const formatGameDuration = (seconds: number): string => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes}분 ${remainingSeconds}초`;
+  };
+
+  // const getSecondRuneImageUrl = () => {
+  //   const url = myMatchInfoData[idx].perks.styles[1].style;
+  // }
+
+  const runeInfoMap: Map<number, string> = new Map(runeInfoData.map(item => [item.id, item.icon]));
+
+  const getIconFromId = (id: number): string => {
+      const icon = runeInfoMap.get(id);
+      if (icon !== undefined) {
+          return icon;
+      }
+      return "";
+  };
+
+  // const getMainRuneImageUrl = (runeName: string) => {
+  //   return `https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/${perk.icon}`;
+  // }
+  const getMainRuneImageUrl = (id: number) => {
+    return `https://ddragon.leagueoflegends.com/cdn/img/${getIconFromId(id)}`;
+  }
+
   if (!myMatchInfoData.length) {
     return <div>No match data available</div>;
   }
@@ -40,9 +99,9 @@ export const RecentGames = ({matchInfos, puuid}: RecentGamesProps) => {
         <div key={idx} className="flex w-full h-[96px] rounded-lg py-[4px] mb-4">
           <div className="flex flex-col w-[110px] h-full">
             <span>{matchInfo.info.gameMode === "CLASSIC" ? "솔랭" : "아직미구현"}</span>
-            <span>몇일전</span>
-            <span>승패</span>
-            <span>게임 시간</span>
+            <span>{calculateDaysAgo(matchInfo.info.gameCreation)}</span>
+            <span>{myMatchInfoData[idx].win ? "승리" : "패배"}</span>
+            <span>{formatGameDuration(matchInfo.info.gameDuration)}</span>
           </div>
           <div className="flex flex-col w-3/5 h-full">
             <div className="flex w-full h-4/5">
@@ -56,11 +115,40 @@ export const RecentGames = ({matchInfos, puuid}: RecentGamesProps) => {
                 />
               </div>
               <div>
-                <div>스펠1</div>
-                <div>스펠2</div>
+                <div className="ml-1">
+                  <Image 
+                    src={getSpellImageUrl(myMatchInfoData[idx].summoner1Id)}
+                    alt="소환사 스펠"
+                    width={22}
+                    height={22}
+                    style={{ width: "22px", height: "22px" }}
+                    layout="fixed"
+                  />
+                </div>
+                <div className="ml-1">
+                  <Image 
+                      src={getSpellImageUrl(myMatchInfoData[idx].summoner2Id)}
+                      alt="소환사 스펠"
+                      width={22}
+                      height={22}
+                      style={{ width: "22px", height: "22px" }}
+                      layout="fixed"
+                  />
+                </div>
               </div>
               <div>
-                <div>주룬</div>
+                <div>
+                  <Image 
+                    // src={`https://ddragon.leagueoflegends.com/cdn/img/${getIconFromId(myMatchInfoData[idx].perks.styles[0].selections[0].perk)}`}
+                    // src={`https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Inspiration/FirstStrike/FirstStrike.png`}
+                    src={getMainRuneImageUrl(myMatchInfoData[idx].perks.styles[0].selections[0].perk)}
+                    alt="메인룬 이미지"
+                    width={22}
+                    height={22}
+                    style={{ width: "22px", height: "22px" }}
+                    layout="fixed"
+                  />
+                </div>
                 <div>부룬</div>
               </div>
               <div>
@@ -180,42 +268,6 @@ export const RecentGames = ({matchInfos, puuid}: RecentGamesProps) => {
           </div>
         </div>
       ))}
-      
-
-      
-      {/* <div className="py-2">
-        {matchInfos.map((matchInfo, index) => (
-          <div key={index}> 
-            <h2>Match {index + 1}</h2>
-            <p>Match ID: {matchInfo.metadata.matchId}</p>
-            <p>Game Mode: {matchInfo.info.gameMode}</p>
-            <p>Participants:</p>
-            <ul>
-              {matchInfo.info.participants.map((participant, idx) => (
-                <li key={idx}>
-                  <p>Summoner Name: {participant.summonerName}</p>
-                  <p>게임시간: {participant.timePlayed}</p>
-                  <p>Champion: {participant.championName}</p>
-                  <p>Kills: {participant.kills}</p>
-                  <p>Deaths: {participant.deaths}</p>
-                  <p>Assists: {participant.assists}</p>
-                  <p>총 피해량: {participant.totalDamageDealtToChampions}</p>
-                  <p>더블킬: {participant.doubleKills}</p>
-                  <p>트리플킬: {participant.tripleKills}</p>
-                  <p>쿼드라킬: {participant.quadraKills}</p>
-                  <p>팬타킬: {participant.pentaKills}</p>
-                  <p>시야점수: {participant.visionScore}</p>
-                  <p>현상금: {participant.challenges.bountyGold}</p>
-                  <p>분당 데미지: {participant.challenges.damagePerMinute}</p>
-                  <p>분당 얻은 골드: {participant.challenges.goldPerMinute}</p>
-                  <p>KDA: {participant.challenges.kda}</p>
-                  <p>첫 10분 미니언 처치수: {participant.challenges.laneMinionsFirst10Minutes}</p>
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
-      </div> */}
     </div>
   )
 }

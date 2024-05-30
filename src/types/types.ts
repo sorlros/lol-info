@@ -45,13 +45,35 @@ export interface Participant {
   item3: number; 
   item4: number;
   item5: number; 
-  item6: number; 
+  item6: number;
+  summoner1Id: number;
+  summoner2Id: number;
+  win: boolean;
+  perks: Perks;
+}
+
+export interface Perks {
+  styles: Styles[]
+}
+
+export interface Styles {
+  selections: Selections[];
+  style: number;
+}
+
+export interface Selections {
+  perk: number;
+  var1: number;
+  var2: number;
+  var3: number;
 }
 
 export interface Info {
   gameMode: string;
   gameType: string;
+  gameCreation: number;
   participants: Array<Participant>
+  gameDuration: number;
 }
 
 export interface Challenges {
@@ -65,4 +87,8 @@ export interface Challenges {
   kda: number;
   laneMinionsFirst10Minutes: number;
 
+}
+
+export interface SpellMapping {
+  [key: number]: string;
 }
