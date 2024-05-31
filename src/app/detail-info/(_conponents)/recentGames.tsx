@@ -75,12 +75,20 @@ export const RecentGames = ({matchInfos, puuid}: RecentGamesProps) => {
   const runeInfoMap: Map<number, string> = new Map(runeInfoData.map(item => [item.id, item.icon]));
 
   const getIconFromId = (id: number): string => {
-      const icon = runeInfoMap.get(id);
-      if (icon !== undefined) {
-          return icon;
-      }
-      return "";
-  };
+    for (const item of runeInfoData) {
+        if (item.id === id) {
+            return item.icon;
+        }
+        for (const slot of item.slots) {
+            for (const rune of slot.runes) {
+                if (rune.id === id) {
+                    return rune.icon;
+                }
+            }
+        }
+    }
+    return "";
+};
 
   // const getMainRuneImageUrl = (runeName: string) => {
   //   return `https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/${perk.icon}`;
@@ -98,8 +106,10 @@ export const RecentGames = ({matchInfos, puuid}: RecentGamesProps) => {
       {matchInfos.map((matchInfo: Match, idx: number) => (
         <div key={idx} className="flex w-full h-[96px] rounded-lg py-[4px] mb-4">
           <div className="flex flex-col w-[110px] h-full">
-            <span>{matchInfo.info.gameMode === "CLASSIC" ? "솔랭" : "아직미구현"}</span>
-            <span>{calculateDaysAgo(matchInfo.info.gameCreation)}</span>
+            <span className={
+              myMatchInfoData[idx].win ? "text-blue-500" : "text-red-500"
+            }>{matchInfo.info.gameMode === "CLASSIC" ? "솔랭" : "아직미구현"}</span>
+            <span className="text-neutral-400 text-sm">{calculateDaysAgo(matchInfo.info.gameCreation)}</span>
             <span>{myMatchInfoData[idx].win ? "승리" : "패배"}</span>
             <span>{formatGameDuration(matchInfo.info.gameDuration)}</span>
           </div>
@@ -137,10 +147,8 @@ export const RecentGames = ({matchInfos, puuid}: RecentGamesProps) => {
                 </div>
               </div>
               <div>
-                <div>
+                <div className="ml-1">
                   <Image 
-                    // src={`https://ddragon.leagueoflegends.com/cdn/img/${getIconFromId(myMatchInfoData[idx].perks.styles[0].selections[0].perk)}`}
-                    // src={`https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Inspiration/FirstStrike/FirstStrike.png`}
                     src={getMainRuneImageUrl(myMatchInfoData[idx].perks.styles[0].selections[0].perk)}
                     alt="메인룬 이미지"
                     width={22}
@@ -149,19 +157,31 @@ export const RecentGames = ({matchInfos, puuid}: RecentGamesProps) => {
                     layout="fixed"
                   />
                 </div>
-                <div>부룬</div>
+                <div className="ml-1">
+                <Image 
+                    src={getMainRuneImageUrl(myMatchInfoData[idx].perks.styles[1].style)}
+                    alt="부룬 이미지"
+                    width={22}
+                    height={22}
+                    style={{ width: "22px", height: "22px", borderRadius: "50%" }}
+                    layout="fixed"
+                  />
+                </div>
               </div>
-              <div>
-                <span>킬</span>
-                <span>어시</span>
-                <span>데스</span>
+              <div className="flex gap-x-1 ml-2 w-min-[108px]">
+                <span className="text-white">{myMatchInfoData[idx].kills}</span>
+                <span className="text-neutral-500">/</span>
+                <span className="text-red-600">{myMatchInfoData[idx].deaths}</span>
+                <span className="text-neutral-500">/</span>
+                <span className="text-white">{myMatchInfoData[idx].assists}</span>
               </div>
-              <div>
-                <div>킬관여율</div>
-                <div>제어와드</div>
-                <div>cs(분당cs)</div>
-                <div>티어</div>
-              </div>
+
+                <div className="flex flex-col justify-end ml-3 text-[12px]">
+                  <div>킬관여율</div>
+                  <div>제어와드</div>
+                  <div>cs(분당cs)</div>
+                  <div>티어</div>
+                </div>
             </div>
             
             <div className="flex flex-col w-full h-1/5">
@@ -251,19 +271,27 @@ export const RecentGames = ({matchInfos, puuid}: RecentGamesProps) => {
                     style={{ width: "22px", height: "22px" }}
                     layout="fixed"
                   />
+
+                  {myMatchInfoData[idx].pentaKills || myMatchInfoData[idx].quadraKills || myMatchInfoData[idx].tripleKills || myMatchInfoData[idx].doubleKills ? (    
+                    <div className="w-max-[65px] h-full rounded-lg bg-red-600 whitespace-nowrap text-white py-0.5 px-1 ml-2">
+                      {myMatchInfoData[idx].pentaKills ? "펜타킬" : myMatchInfoData[idx].quadraKills ? "쿼드라킬" : myMatchInfoData[idx].tripleKills ? "트리플킬" : myMatchInfoData[idx].doubleKills ? "더블킬" : ""}
+                    </div>
+                  ) : null}
                 </div>
-                <div>최대킬 , 스코어</div>
               </div>
             </div>
           </div>
-          <div className="flex w-1/5 h-full">
-            <div>
-              사람목록
+
+          <div className="flex justify-end">
+            <div className="flex w-1/5 h-full">
+              <div>
+                사람목록
+              </div>
             </div>
-          </div>
-          <div>
             <div>
-              버튼 위치
+              <div>
+                버튼 위치
+              </div>
             </div>
           </div>
         </div>
