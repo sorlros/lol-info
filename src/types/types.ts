@@ -8,6 +8,8 @@ export interface MetaData {
   participants: Array<string>;
 }
 
+type TeamId = 100 | 200;
+
 export interface Participant {
   assists: number;
   bountyLevel: number;
@@ -50,6 +52,9 @@ export interface Participant {
   summoner2Id: number;
   win: boolean;
   perks: Perks;
+  teamId: TeamId;
+  totalMinionsKilled: number;
+  neutralMinionsKilled: number;
 }
 
 export interface Perks {
@@ -74,6 +79,20 @@ export interface Info {
   gameCreation: number;
   participants: Array<Participant>
   gameDuration: number;
+  teams: Teams[];
+}
+
+export interface Teams {
+  objectives: {
+    champion: {
+      kills: number,
+      first: boolean
+    },
+    tower: {
+      kills: number,
+      first: boolean,
+    }
+  }
 }
 
 export interface Challenges {

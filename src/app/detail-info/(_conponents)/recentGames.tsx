@@ -68,10 +68,6 @@ export const RecentGames = ({matchInfos, puuid}: RecentGamesProps) => {
     return `${minutes}분 ${remainingSeconds}초`;
   };
 
-  // const getSecondRuneImageUrl = () => {
-  //   const url = myMatchInfoData[idx].perks.styles[1].style;
-  // }
-
   const runeInfoMap: Map<number, string> = new Map(runeInfoData.map(item => [item.id, item.icon]));
 
   const getIconFromId = (id: number): string => {
@@ -88,13 +84,36 @@ export const RecentGames = ({matchInfos, puuid}: RecentGamesProps) => {
         }
     }
     return "";
-};
+  };
 
-  // const getMainRuneImageUrl = (runeName: string) => {
-  //   return `https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/${perk.icon}`;
-  // }
   const getMainRuneImageUrl = (id: number) => {
     return `https://ddragon.leagueoflegends.com/cdn/img/${getIconFromId(id)}`;
+  }
+
+  const calculateKillEngagementRate = (idx: number) => {
+    let allKills;
+    let rate;
+
+    if (myMatchInfoData[idx].teamId === 100) {
+      allKills = matchInfos[idx].info.teams[0].objectives.champion.kills;
+      rate = Math.ceil((myMatchInfoData[idx].kills + myMatchInfoData[idx].assists) / allKills * 100);
+      // console.log("킬관여율", rate);
+    } else if (myMatchInfoData[idx].teamId === 200) {
+      allKills = matchInfos[idx].info.teams[1].objectives.champion.kills;
+      rate = Math.ceil((myMatchInfoData[idx].kills + myMatchInfoData[idx].assists) / allKills * 100);
+      // console.log("킬관여율", rate);
+    }
+
+    if (rate !== undefined) {
+      return rate.toString();
+    } else {
+      return "";
+    }
+  }
+
+  const totalMinions = (idx: number) => {
+    const allMinions = myMatchInfoData[idx].totalMinionsKilled + myMatchInfoData[idx].neutralMinionsKilled;
+    return allMinions;
   }
 
   if (!myMatchInfoData.length) {
@@ -102,19 +121,24 @@ export const RecentGames = ({matchInfos, puuid}: RecentGamesProps) => {
   }
 
   return (
-    <div className="flex flex-col w-2/3 min-h-screen rounded-lg bg-[#28344E]">
+    <div className="flex flex-col w-[694px] min-h-screen rounded-lg bg-[#1C1C1F]">
       {matchInfos.map((matchInfo: Match, idx: number) => (
-        <div key={idx} className="flex w-full h-[96px] rounded-lg py-[4px] mb-4">
+        <div key={idx} className={myMatchInfoData[idx].win 
+          ? "flex w-full h-[96px] rounded-lg px-[8px] py-[8px] pb-4 mb-4 bg-[#28344E]" 
+          : "flex w-full h-[96px] rounded-lg px-[8px] py-[8px] pb-4 mb-4 bg-[#703C47]"}>
           <div className="flex flex-col w-[110px] h-full">
             <span className={
-              myMatchInfoData[idx].win ? "text-blue-500" : "text-red-500"
+              myMatchInfoData[idx].win ? "text-blue-500 text-[14px]" : "text-red-500 text-[14px]"
             }>{matchInfo.info.gameMode === "CLASSIC" ? "솔랭" : "아직미구현"}</span>
-            <span className="text-neutral-400 text-sm">{calculateDaysAgo(matchInfo.info.gameCreation)}</span>
-            <span>{myMatchInfoData[idx].win ? "승리" : "패배"}</span>
-            <span>{formatGameDuration(matchInfo.info.gameDuration)}</span>
+            <span className="text-neutral-400 text-[12px]">{calculateDaysAgo(matchInfo.info.gameCreation)}</span>
+            <div className="w-[48px] h-[0.5px] bg-neutral-600" />
+            <span className="text-neutral-400 text-[12px] font-bold">{myMatchInfoData[idx].win ? "승리" : "패배"}</span>
+            <span className="text-neutral-400 text-[12px]">{formatGameDuration(matchInfo.info.gameDuration)}</span>
           </div>
-          <div className="flex flex-col w-3/5 h-full">
-            <div className="flex w-full h-4/5">
+
+          <div className="flex flex-col w-[378px] h-full">
+            <div className="flex items-stretch w-full h-4/5">
+              <div className="flex w-[98px]">
               <div>
                 <Image 
                   src={`https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/${myMatchInfoData[idx].championName}.png`}
@@ -168,7 +192,9 @@ export const RecentGames = ({matchInfos, puuid}: RecentGamesProps) => {
                   />
                 </div>
               </div>
-              <div className="flex gap-x-1 ml-2 w-min-[108px]">
+              </div>
+
+              <div className="flex w-[108px] gap-x-1 ml-2">
                 <span className="text-white">{myMatchInfoData[idx].kills}</span>
                 <span className="text-neutral-500">/</span>
                 <span className="text-red-600">{myMatchInfoData[idx].deaths}</span>
@@ -176,11 +202,12 @@ export const RecentGames = ({matchInfos, puuid}: RecentGamesProps) => {
                 <span className="text-white">{myMatchInfoData[idx].assists}</span>
               </div>
 
-                <div className="flex flex-col justify-end ml-3 text-[12px]">
-                  <div>킬관여율</div>
-                  <div>제어와드</div>
-                  <div>cs(분당cs)</div>
-                  <div>티어</div>
+                <div className="w-[0.5px] h-[58px] bg-neutral-600 mr-2"></div>
+                <div className="flex flex-col w-[139px] items-start h-full text-[12px] text-neutral-400">
+                  <div>
+                    <span className="text-red-600">킬관여율</span> {calculateKillEngagementRate(idx)}%</div>
+                  <div>제어 와드 {myMatchInfoData[idx].detectorWardsPlaced}</div>
+                  <div>CS {totalMinions(idx)} ({(totalMinions(idx) / (matchInfo.info.gameDuration / 60)).toFixed(1)})</div>
                 </div>
             </div>
             
@@ -273,7 +300,7 @@ export const RecentGames = ({matchInfos, puuid}: RecentGamesProps) => {
                   />
 
                   {myMatchInfoData[idx].pentaKills || myMatchInfoData[idx].quadraKills || myMatchInfoData[idx].tripleKills || myMatchInfoData[idx].doubleKills ? (    
-                    <div className="w-max-[65px] h-full rounded-lg bg-red-600 whitespace-nowrap text-white py-0.5 px-1 ml-2">
+                    <div className="w-max-[65px] h-[20px] items-center justify-center rounded-lg bg-red-600 whitespace-nowrap text-white text-[12px] py-0.5 px-1 ml-2">
                       {myMatchInfoData[idx].pentaKills ? "펜타킬" : myMatchInfoData[idx].quadraKills ? "쿼드라킬" : myMatchInfoData[idx].tripleKills ? "트리플킬" : myMatchInfoData[idx].doubleKills ? "더블킬" : ""}
                     </div>
                   ) : null}
@@ -283,7 +310,7 @@ export const RecentGames = ({matchInfos, puuid}: RecentGamesProps) => {
           </div>
 
           <div className="flex justify-end">
-            <div className="flex w-1/5 h-full">
+            <div className="flex w-[168px] h-full">
               <div>
                 사람목록
               </div>
