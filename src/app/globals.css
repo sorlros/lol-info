@@ -74,3 +74,12 @@
       @apply bg-background text-foreground;
     }
   }
+
+  @layer components {
+    .bg-spread-button {
+      background-color: rgb(47, 67, 110);
+    }
+    .bg-spread-button2 {
+      background-color: rgb(112, 60, 71);
+    }
+  }

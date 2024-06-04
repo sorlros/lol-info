@@ -55,6 +55,8 @@ export interface Participant {
   teamId: TeamId;
   totalMinionsKilled: number;
   neutralMinionsKilled: number;
+  riotIdGameName: string;
+  riotIdTagline: number;
 }
 
 export interface Perks {

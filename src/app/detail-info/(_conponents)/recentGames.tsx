@@ -68,7 +68,20 @@ export const RecentGames = ({matchInfos, puuid}: RecentGamesProps) => {
     return `${minutes}분 ${remainingSeconds}초`;
   };
 
-  const runeInfoMap: Map<number, string> = new Map(runeInfoData.map(item => [item.id, item.icon]));
+  // const runeInfoMap: Map<number, string> = new Map(runeInfoData.map(item => [item.id, item.icon]));
+
+  const getMyChampImage = (idx: number) => {
+    const champName = myMatchInfoData[idx].championName;
+    const url = `https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/${champName}.png`;
+    return url;
+  }
+
+  // const getChampImage = (idx: number) => {
+  //   const champName = matchInfo.info.participants[idx].championName;
+  //   console.log("NAME", champName)
+  //   const url = `https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/${champName}.png`;
+  //   return url;
+  // }
 
   const getIconFromId = (id: number): string => {
     for (const item of runeInfoData) {
@@ -141,7 +154,7 @@ export const RecentGames = ({matchInfos, puuid}: RecentGamesProps) => {
               <div className="flex w-[98px]">
               <div>
                 <Image 
-                  src={`https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/${myMatchInfoData[idx].championName}.png`}
+                  src={getMyChampImage(idx)}
                   alt="챔피언 이미지"
                   style={{ width: "auto", height: "auto" }}
                   width={48}
@@ -310,15 +323,37 @@ export const RecentGames = ({matchInfos, puuid}: RecentGamesProps) => {
           </div>
 
           <div className="flex justify-end">
-            <div className="flex w-[168px] h-full">
-              <div>
-                사람목록
-              </div>
+            <div className="grid grid-flow-col grid-cols-2 grid-rows-5 w-[168px] h-[88px] pb-2">
+              {
+                matchInfo.info.participants.map((participant, idx) => (
+                  <div 
+                    key={participant.puuid} 
+                    className="flex w-[80px] h-[16px] gap-x-1 items-center"
+                  >
+                    <Image 
+                      src={`https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/${participant.championName}.png`}
+                      alt="챔피언 이미지"
+                      style={{ width: "auto", height: "auto" }}
+                      width={16}
+                      height={16}
+                    />
+                    <div className="whitespace-nowrap overflow-hidden overflow-ellipsis">
+                      <span className="text-neutral-300 text-[12px]">
+                        {participant.riotIdGameName}
+                      </span>
+                    </div>
+                  </div>
+                ))
+              }
             </div>
-            <div>
-              <div>
-                버튼 위치
-              </div>
+          </div>
+
+          <div>
+            <div className={myMatchInfoData[idx].win 
+              ? "flex flex-end w-[40px] h-full bg-spread-button rounded-r-lg px-0 py-0" 
+              : "flex flex-end w-[40px] h-full bg-spread-button2 rounded-r-lg px-0 py-0"}
+            >
+              버튼 위치
             </div>
           </div>
         </div>
