@@ -10,7 +10,7 @@ interface RecentGamesProps {
 }
 
 export const RecentGames = ({matchInfos, puuid}: RecentGamesProps) => {
-  const [isOpen, setIsOpen] = useState();
+  const [isOpen, setIsOpen] = useState<boolean[]>(Array(matchInfos.length).fill(false));
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [myMatchInfoData, setMyMatchInfoData] = useState<Participant[]>([]);
 
@@ -76,13 +76,6 @@ export const RecentGames = ({matchInfos, puuid}: RecentGamesProps) => {
     return url;
   }
 
-  // const getChampImage = (idx: number) => {
-  //   const champName = matchInfo.info.participants[idx].championName;
-  //   console.log("NAME", champName)
-  //   const url = `https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/${champName}.png`;
-  //   return url;
-  // }
-
   const getIconFromId = (id: number): string => {
     for (const item of runeInfoData) {
         if (item.id === id) {
@@ -129,6 +122,25 @@ export const RecentGames = ({matchInfos, puuid}: RecentGamesProps) => {
     return allMinions;
   }
 
+  const toggleIsOpen = (index: number) => {
+    setIsOpen(prev => {
+      const newIsOpen = [...prev];
+      newIsOpen[index] = !newIsOpen[index];
+      return newIsOpen;
+    });
+  }
+
+  const liColor = () => {
+    const element = document.querySelector('[data-request]');
+    const requestValue = element?.getAttribute('data-request');
+
+    if (requestValue === "true") {
+      return "bg-[#28344E]"
+    } else {
+      return "bg-[#703C47]"
+    }
+  }
+
   if (!myMatchInfoData.length) {
     return <div>No match data available</div>;
   }
@@ -137,8 +149,8 @@ export const RecentGames = ({matchInfos, puuid}: RecentGamesProps) => {
     <div className="flex flex-col w-[694px] min-h-screen rounded-lg bg-[#1C1C1F]">
       {matchInfos.map((matchInfo: Match, idx: number) => (
         <div key={idx} className={myMatchInfoData[idx].win 
-          ? "flex w-full h-[96px] rounded-lg px-[8px] py-[8px] pb-4 mb-4 bg-[#28344E]" 
-          : "flex w-full h-[96px] rounded-lg px-[8px] py-[8px] pb-4 mb-4 bg-[#703C47]"}>
+          ? `flex w-full h-[96px] rounded-lg px-[8px] py-[8px] pb-4 bg-[#28344E] relative ${isOpen[idx] ? "mb-[555px]" : "mb-[8px]"}` 
+          : `flex w-full h-[96px] rounded-lg px-[8px] py-[8px] pb-4 bg-[#703C47] relative ${isOpen[idx] ? "mb-[555px]" : "mb-[8px]"}`}>
           <div className="flex flex-col w-[110px] h-full">
             <span className={
               myMatchInfoData[idx].win ? "text-blue-500 text-[14px]" : "text-red-500 text-[14px]"
@@ -348,12 +360,39 @@ export const RecentGames = ({matchInfos, puuid}: RecentGamesProps) => {
             </div>
           </div>
 
-          <div>
-            <div className={myMatchInfoData[idx].win 
-              ? "flex flex-end w-[40px] h-full bg-spread-button rounded-r-lg px-0 py-0" 
-              : "flex flex-end w-[40px] h-full bg-spread-button2 rounded-r-lg px-0 py-0"}
-            >
-              버튼 위치
+          <div className="flex w-[40px] h-[80px] items-end justify-center">
+            <button onClick={() => toggleIsOpen(idx)}>
+              <svg
+                className={`w-5 h-5 text-white transition-transform ${isOpen[idx] ? 'transform rotate-180' : ''}`}
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+          </div>
+          
+          {/* 상세 정보 */}
+          <div className={`${isOpen[idx] ? "w-full h-[541px] absolute rounded-lg mt-2 left-0 top-[96px]" : "hidden"}`}>
+            <ul className="flex w-full h-[33px] text-[14px] rounded-t-lg bg-[#28282b]">
+              <li className="flex justify-center items-center w-[175px] text-[#7B7A8E]">
+                {myMatchInfoData[idx].win ? "승리" : "패배"}
+              </li>
+              <li className="flex justify-center items-center w-[68px] h-full text-[#7B7A8E]">OP 스코어</li>
+              <li className="flex justify-center items-center w-[98px] text-[#7B7A8E]">KDA</li>
+              <li className="flex justify-center items-center w-[120px] text-[#7B7A8E]">피해량</li>
+              <li className="flex justify-center items-center w-[48px] text-[#7B7A8E]">와드</li>
+              <li className="flex justify-center items-center w-[56px] text-[#7B7A8E]">CS</li>
+              <li className="flex justify-center items-center w-[175px] text-[#7B7A8E]">아이템</li>
+            </ul>
+            <div className={
+              `${myMatchInfoData[idx].win 
+                ? "flex w-full h-[508px] rounded-b-lg bg-[#28344E]" 
+                : "flex w-full h-[508px] rounded-b-lg bg-[#703C47]"
+            }`}>
+              asdasd
             </div>
           </div>
         </div>
