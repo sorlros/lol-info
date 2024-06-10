@@ -2,6 +2,7 @@ import { Info, Match, MetaData, Participant, Perks, SpellMapping } from "@/types
 import { useEffect, useState } from "react";
 import Image from 'next/image';
 import runeInfoData from "@/json/runeInfo.json";
+import MatchDetails from "./matchDetails";
 
 
 interface RecentGamesProps {
@@ -130,16 +131,7 @@ export const RecentGames = ({matchInfos, puuid}: RecentGamesProps) => {
     });
   }
 
-  const liColor = () => {
-    const element = document.querySelector('[data-request]');
-    const requestValue = element?.getAttribute('data-request');
-
-    if (requestValue === "true") {
-      return "bg-[#28344E]"
-    } else {
-      return "bg-[#703C47]"
-    }
-  }
+  const emptyItem = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60qxkwAAAABJRU5ErkJggg=="
 
   if (!myMatchInfoData.length) {
     return <div>No match data available</div>;
@@ -242,7 +234,7 @@ export const RecentGames = ({matchInfos, puuid}: RecentGamesProps) => {
                   <Image 
                     src={
                       myMatchInfoData[idx].item0 === 0
-                      ? 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60qxkwAAAABJRU5ErkJggg=='
+                      ? emptyItem
                       : `https://ddragon.leagueoflegends.com/cdn/14.10.1/img/item/${myMatchInfoData[idx].item0}.png`
                     } 
                     alt="아이템 이미지"
@@ -254,7 +246,7 @@ export const RecentGames = ({matchInfos, puuid}: RecentGamesProps) => {
                   <Image 
                     src={
                       myMatchInfoData[idx].item1 === 0
-                      ? 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60qxkwAAAABJRU5ErkJggg=='
+                      ? emptyItem
                       : `https://ddragon.leagueoflegends.com/cdn/14.10.1/img/item/${myMatchInfoData[idx].item1}.png`
                     } 
                     alt="아이템 이미지"
@@ -266,7 +258,7 @@ export const RecentGames = ({matchInfos, puuid}: RecentGamesProps) => {
                   <Image
                     src={
                       myMatchInfoData[idx].item2 === 0
-                      ? 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60qxkwAAAABJRU5ErkJggg=='
+                      ? emptyItem
                       : `https://ddragon.leagueoflegends.com/cdn/14.10.1/img/item/${myMatchInfoData[idx].item2}.png`
                     } 
                     alt="아이템 이미지"
@@ -278,7 +270,7 @@ export const RecentGames = ({matchInfos, puuid}: RecentGamesProps) => {
                   <Image
                     src={
                       myMatchInfoData[idx].item3 === 0
-                      ? 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60qxkwAAAABJRU5ErkJggg=='
+                      ? emptyItem
                       : `https://ddragon.leagueoflegends.com/cdn/14.10.1/img/item/${myMatchInfoData[idx].item3}.png`
                     } 
                     alt="아이템 이미지"
@@ -290,7 +282,7 @@ export const RecentGames = ({matchInfos, puuid}: RecentGamesProps) => {
                   <Image
                     src={
                       myMatchInfoData[idx].item4 === 0
-                      ? 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60qxkwAAAABJRU5ErkJggg=='
+                      ? emptyItem
                       : `https://ddragon.leagueoflegends.com/cdn/14.10.1/img/item/${myMatchInfoData[idx].item4}.png`
                     } 
                     alt="아이템 이미지"
@@ -302,7 +294,7 @@ export const RecentGames = ({matchInfos, puuid}: RecentGamesProps) => {
                   <Image
                     src={
                       myMatchInfoData[idx].item5 === 0
-                      ? 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60qxkwAAAABJRU5ErkJggg=='
+                      ? emptyItem
                       : `https://ddragon.leagueoflegends.com/cdn/14.10.1/img/item/${myMatchInfoData[idx].item5}.png`
                     } 
                     alt="아이템 이미지"
@@ -314,7 +306,7 @@ export const RecentGames = ({matchInfos, puuid}: RecentGamesProps) => {
                   <Image
                     src={
                       myMatchInfoData[idx].item6 === 0
-                      ? 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60qxkwAAAABJRU5ErkJggg=='
+                      ? emptyItem
                       : `https://ddragon.leagueoflegends.com/cdn/14.10.1/img/item/${myMatchInfoData[idx].item6}.png`
                     } 
                     alt="아이템 이미지"
@@ -374,27 +366,7 @@ export const RecentGames = ({matchInfos, puuid}: RecentGamesProps) => {
             </button>
           </div>
           
-          {/* 상세 정보 */}
-          <div className={`${isOpen[idx] ? "w-full h-[541px] absolute rounded-lg mt-2 left-0 top-[96px]" : "hidden"}`}>
-            <ul className="flex w-full h-[33px] text-[14px] rounded-t-lg bg-[#28282b]">
-              <li className="flex justify-center items-center w-[175px] text-[#7B7A8E]">
-                {myMatchInfoData[idx].win ? "승리" : "패배"}
-              </li>
-              <li className="flex justify-center items-center w-[68px] h-full text-[#7B7A8E]">OP 스코어</li>
-              <li className="flex justify-center items-center w-[98px] text-[#7B7A8E]">KDA</li>
-              <li className="flex justify-center items-center w-[120px] text-[#7B7A8E]">피해량</li>
-              <li className="flex justify-center items-center w-[48px] text-[#7B7A8E]">와드</li>
-              <li className="flex justify-center items-center w-[56px] text-[#7B7A8E]">CS</li>
-              <li className="flex justify-center items-center w-[175px] text-[#7B7A8E]">아이템</li>
-            </ul>
-            <div className={
-              `${myMatchInfoData[idx].win 
-                ? "flex w-full h-[508px] rounded-b-lg bg-[#28344E]" 
-                : "flex w-full h-[508px] rounded-b-lg bg-[#703C47]"
-            }`}>
-              asdasd
-            </div>
-          </div>
+          <MatchDetails matchInfo={matchInfo} isOpen={isOpen} idx={idx} myMatchInfoData={myMatchInfoData} />
         </div>
       ))}
     </div>

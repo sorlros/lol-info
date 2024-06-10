@@ -39,6 +39,7 @@ export interface Participant {
   turretKills: number;
   visionScore: number;
   wardsKilled: number;
+  wardsPlaced: number;
   challenges: Challenges;
   puuid: string;
   item0: number;
