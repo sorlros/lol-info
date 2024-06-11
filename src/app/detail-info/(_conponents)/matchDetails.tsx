@@ -1,5 +1,7 @@
 import { Match, Participant } from "@/types/types";
 import Image from "next/image";
+import runeInfoData from "@/json/runeInfo.json";
+import { getRuneImageUrl, getSpellImageUrl } from "@/lib/tools";
 
 interface MatchDetailProps {
   matchInfo: Match;
@@ -18,44 +20,82 @@ const MatchDetails = ({ matchInfo, isOpen, idx, myMatchInfoData }: MatchDetailPr
   const myTeam = matchInfo.info.participants.filter(participant => participant.teamId === myParticipant.teamId);
   const enemyTeam = matchInfo.info.participants.filter(participant => participant.teamId !== myParticipant.teamId);
 
-  const getMyChampImage = (idx: number) => {
-    const champName = participant[idx].championName;
-    const url = `https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/${champName}.png`;
-    return url;
-  }
-
   return (
-    <div className={`${isOpen[idx] ? "w-full h-[541px] absolute rounded-lg mt-2 left-0 top-[96px]" : "hidden"}`}>
+    <div className={`${isOpen[idx] ? "w-full h-[694px] absolute rounded-lg mt-2 left-0 top-[96px]" : "hidden"}`}>
       {/* 검색한 소환사의 팀 */}
       <ul className="flex w-full h-[33px] text-[14px] rounded-t-lg bg-[#28282b]">
-        <li className="flex justify-center items-center w-[175px] text-[#7B7A8E]">
+        <li className="flex justify-center items-center w-[243px] text-[#7B7A8E]">
           {myParticipant.win ? "승리" : "패배"}
         </li>
-        <li className="flex justify-center items-center w-[68px] h-full text-[#7B7A8E]">OP 스코어</li>
+        {/* <li className="flex justify-center items-center w-[68px] h-full text-[#7B7A8E]">OP 스코어</li> */}
         <li className="flex justify-center items-center w-[98px] text-[#7B7A8E]">KDA</li>
         <li className="flex justify-center items-center w-[120px] text-[#7B7A8E]">피해량</li>
         <li className="flex justify-center items-center w-[48px] text-[#7B7A8E]">와드</li>
         <li className="flex justify-center items-center w-[56px] text-[#7B7A8E]">CS</li>
         <li className="flex justify-center items-center w-[175px] text-[#7B7A8E]">아이템</li>
       </ul>
-      <div className={`${myParticipant.win ? "flex w-full h-[249px] rounded-b-lg bg-[#28344E]" : "flex w-full h-[249px] rounded-b-lg bg-[#703C47]"}`}>
+      <div className={`${myParticipant.win ? "flex w-full h-[250px] pt-2 rounded-b-lg justify-center bg-[#28344E]" : "flex w-full h-[250px] pt-2 rounded-b-lg justify-center bg-[#703C47]"}`}>
         <div className="flex flex-col w-full h-[210px]">
           {
             myTeam.map((participant, idx) => (
-              <div key={participant.puuid} className="flex w-full">
-                <div className="flex justify-center items-center w-[175px] h-[42px]">
-                  <div className="w-[44px] h-[42px] rounded-lg">
+              <div key={participant.puuid} className="flex w-full h-full space-y-1 justify-center items-center text-[14px]">
+                <div className="flex justify-center items-center w-[222px] h-[42px]">
+                  <div className="flex w-[40px] h-[40px] rounded-full overflow-hidden mr-1">
                     <Image 
                       src={`https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/${participant.championName}.png`}
                       alt="ChampImage"
-                      style={{ width: "auto", height: "auto", border: "50%" }}
+                      style={{ width: "auto", height: "auto"}}
                       width={32}
                       height={32}
                     />
                   </div>
-                  {participant.summonerName}
+                  <div className="flex flex-col w-[18px] h-[42px] items-center gap-y-1">
+                    <div className="w-[18px] h-[18px] rounded-full">
+                      <Image 
+                        src={getSpellImageUrl(myMatchInfoData[idx].summoner1Id)}
+                        alt="소환사 스펠"
+                        width={18}
+                        height={18}
+                        style={{ width: "18px", height: "18px" }}
+                        layout="fixed"
+                      />
+                    </div>
+                    
+                    <div className="w-[18px] h-[18px] rounded-full">
+                      <Image 
+                        src={getSpellImageUrl(myMatchInfoData[idx].summoner2Id)}
+                        alt="소환사 스펠"
+                        width={18}
+                        height={18}
+                        style={{ width: "18px", height: "18px" }}
+                        layout="fixed"
+                      />
+                    </div>
+                    
+                  </div>
+                  <div className="flex flex-col w-[18px] h-full ml-1 mr-2 gap-y-1">
+                    <Image 
+                      src={getRuneImageUrl(myMatchInfoData[idx].perks.styles[0].selections[0].perk)}
+                      alt="메인룬 이미지"
+                      width={18}
+                      height={18}
+                      style={{ width: "18px", height: "18px" }}
+                      layout="fixed"
+                    />
+                      <Image 
+                      src={getRuneImageUrl(myMatchInfoData[idx].perks.styles[1].style)}
+                      alt="부룬 이미지"
+                      width={18}
+                      height={18}
+                      style={{ width: "18px", height: "18px" }}
+                      layout="fixed"
+                    />
+                  </div>
+                  <div className="flex w-[90px] h-full text-white text-[12px] overflow-ellipsis whitespace-nowrap">
+                    {participant.summonerName}
+                  </div>
                 </div>
-                <div className="flex justify-center items-center w-[68px] h-[42px]">{/* OP 스코어 */}</div>
+                {/* <div className="flex justify-center items-center w-[68px] h-[42px]"></div> */}
                 <div className="flex justify-center items-center w-[98px] h-[42px]">{participant.kills}/{participant.deaths}/{participant.assists}</div>
                 <div className="flex justify-center items-center w-[120px] h-[42px]">{participant.totalDamageDealtToChampions}</div>
                 <div className="flex justify-center items-center w-[48px] h-[42px]">{participant.wardsPlaced}</div>
@@ -150,22 +190,67 @@ const MatchDetails = ({ matchInfo, isOpen, idx, myMatchInfoData }: MatchDetailPr
         <li className="flex justify-center items-center w-[56px] text-[#7B7A8E]">CS</li>
         <li className="flex justify-center items-center w-[175px] text-[#7B7A8E]">아이템</li>
       </ul>
-      <div className={`${myParticipant.win ? "flex w-full h-[249px] rounded-b-lg bg-[#703C47]" : "flex w-full h-[249px] rounded-b-lg bg-[#28344E]"}`}>
+      
+      <div className={`${myParticipant.win ? "flex w-full h-[250px] pt-2 rounded-b-lg justify-center bg-[#703C47]" : "flex w-full h-[250px] pt-2 rounded-b-lg justify-center bg-[#28344E]"}`}>
         <div className="flex flex-col w-full h-[210px]">
           {
             enemyTeam.map((participant, idx) => (
-              <div key={participant.puuid} className="flex w-full">
+              <div key={participant.puuid} className="flex w-full h-full mx-2 space-y-1 justify-center items-center">
                 <div className="flex justify-center items-center w-[175px] h-[42px]">
-                  <div className="w-[44px] h-[42px] rounded-lg">
+                  <div className="flex w-[40px] h-[40px] rounded-full overflow-hidden mr-1">
                     <Image 
                       src={`https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/${participant.championName}.png`}
                       alt="ChampImage"
-                      style={{ width: "auto", height: "auto", border: "50%" }}
+                      style={{ width: "auto", height: "auto"}}
                       width={32}
                       height={32}
                     />
                   </div>
-                  {participant.summonerName}
+                  <div className="flex flex-col w-[18px] h-[42px] items-center gap-y-1">
+                    <div className="w-[18px] h-[18px] rounded-full">
+                      <Image 
+                        src={getSpellImageUrl(myMatchInfoData[idx].summoner1Id)}
+                        alt="소환사 스펠"
+                        width={18}
+                        height={18}
+                        style={{ width: "18px", height: "18px" }}
+                        layout="fixed"
+                      />
+                    </div>
+                    
+                    <div className="w-[18px] h-[18px] rounded-full">
+                      <Image 
+                        src={getSpellImageUrl(myMatchInfoData[idx].summoner2Id)}
+                        alt="소환사 스펠"
+                        width={18}
+                        height={18}
+                        style={{ width: "18px", height: "18px" }}
+                        layout="fixed"
+                      />
+                    </div>
+                    
+                  </div>
+                  <div className="flex flex-col w-[18px] h-full ml-1 mr-2 gap-y-1">
+                    <Image 
+                      src={getRuneImageUrl(myMatchInfoData[idx].perks.styles[0].selections[0].perk)}
+                      alt="메인룬 이미지"
+                      width={18}
+                      height={18}
+                      style={{ width: "18px", height: "18px" }}
+                      layout="fixed"
+                    />
+                      <Image 
+                      src={getRuneImageUrl(myMatchInfoData[idx].perks.styles[1].style)}
+                      alt="부룬 이미지"
+                      width={18}
+                      height={18}
+                      style={{ width: "18px", height: "18px" }}
+                      layout="fixed"
+                    />
+                  </div>
+                  <div className="flex w-[90px] h-full text-white text-[14px] overflow-ellipsis whitespace-nowrap">
+                    {participant.summonerName}
+                  </div>
                 </div>
                 <div className="flex justify-center items-center w-[68px] h-[42px]">{/* OP 스코어 */}</div>
                 <div className="flex justify-center items-center w-[98px] h-[42px]">{participant.kills}/{participant.deaths}/{participant.assists}</div>

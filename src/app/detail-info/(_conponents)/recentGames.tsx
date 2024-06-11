@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import Image from 'next/image';
 import runeInfoData from "@/json/runeInfo.json";
 import MatchDetails from "./matchDetails";
+import { calculateDaysAgo, calculateKillEngagementRate, formatGameDuration, getMyChampImage, getRuneImageUrl, getSpellImageUrl, totalMinions } from "@/lib/tools";
 
 
 interface RecentGamesProps {
@@ -33,96 +34,6 @@ export const RecentGames = ({matchInfos, puuid}: RecentGamesProps) => {
     setIsLoading(false);
   }, [matchInfos, puuid]);
 
-  const calculateDaysAgo = (gameCreation: number) => {
-    const now = new Date().getTime();
-    const daysAgo = Math.floor((now - gameCreation) / (1000 * 60 * 60 * 24));
-    return `${daysAgo}일 전`
-  }
-
-  const spellMapping: SpellMapping = {
-    21: "SummonerBarrier",
-    1: "SummonerBoost",
-    14: "SummonerDot",
-    3: "SummonerExhaust",
-    4: "SummonerFlash",
-    6: "SummonerHaste",
-    7: "SummonerHeal",
-    13: "SummonerMana",
-    30: "SummonerPoroRecall",
-    31: "SummonerPoroThrow",
-    11: "SummonerSmite",
-    39: "SummonerSnowURFSnowball_Mark",
-    32: "SummonerSnowball",
-    12: "SummonerTeleport",
-    54: "Summoner_UltBookPlaceholder",
-    55: "Summoner_UltBookSmitePlaceholder"
-  };
-
-  const getSpellImageUrl = (spellId: number): string => {
-    const spellName = spellMapping[spellId];
-    return `https://ddragon.leagueoflegends.com/cdn/14.10.1/img/spell/${spellName}.png`;
-  };
-
-  const formatGameDuration = (seconds: number): string => {
-    const minutes = Math.floor(seconds / 60);
-    const remainingSeconds = seconds % 60;
-    return `${minutes}분 ${remainingSeconds}초`;
-  };
-
-  // const runeInfoMap: Map<number, string> = new Map(runeInfoData.map(item => [item.id, item.icon]));
-
-  const getMyChampImage = (idx: number) => {
-    const champName = myMatchInfoData[idx].championName;
-    const url = `https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/${champName}.png`;
-    return url;
-  }
-
-  const getIconFromId = (id: number): string => {
-    for (const item of runeInfoData) {
-        if (item.id === id) {
-            return item.icon;
-        }
-        for (const slot of item.slots) {
-            for (const rune of slot.runes) {
-                if (rune.id === id) {
-                    return rune.icon;
-                }
-            }
-        }
-    }
-    return "";
-  };
-
-  const getMainRuneImageUrl = (id: number) => {
-    return `https://ddragon.leagueoflegends.com/cdn/img/${getIconFromId(id)}`;
-  }
-
-  const calculateKillEngagementRate = (idx: number) => {
-    let allKills;
-    let rate;
-
-    if (myMatchInfoData[idx].teamId === 100) {
-      allKills = matchInfos[idx].info.teams[0].objectives.champion.kills;
-      rate = Math.ceil((myMatchInfoData[idx].kills + myMatchInfoData[idx].assists) / allKills * 100);
-      // console.log("킬관여율", rate);
-    } else if (myMatchInfoData[idx].teamId === 200) {
-      allKills = matchInfos[idx].info.teams[1].objectives.champion.kills;
-      rate = Math.ceil((myMatchInfoData[idx].kills + myMatchInfoData[idx].assists) / allKills * 100);
-      // console.log("킬관여율", rate);
-    }
-
-    if (rate !== undefined) {
-      return rate.toString();
-    } else {
-      return "";
-    }
-  }
-
-  const totalMinions = (idx: number) => {
-    const allMinions = myMatchInfoData[idx].totalMinionsKilled + myMatchInfoData[idx].neutralMinionsKilled;
-    return allMinions;
-  }
-
   const toggleIsOpen = (index: number) => {
     setIsOpen(prev => {
       const newIsOpen = [...prev];
@@ -141,8 +52,8 @@ export const RecentGames = ({matchInfos, puuid}: RecentGamesProps) => {
     <div className="flex flex-col w-[694px] min-h-screen rounded-lg bg-[#1C1C1F]">
       {matchInfos.map((matchInfo: Match, idx: number) => (
         <div key={idx} className={myMatchInfoData[idx].win 
-          ? `flex w-full h-[96px] rounded-lg px-[8px] py-[8px] pb-4 bg-[#28344E] relative ${isOpen[idx] ? "mb-[555px]" : "mb-[8px]"}` 
-          : `flex w-full h-[96px] rounded-lg px-[8px] py-[8px] pb-4 bg-[#703C47] relative ${isOpen[idx] ? "mb-[555px]" : "mb-[8px]"}`}>
+          ? `flex w-full h-[96px] rounded-lg px-[8px] py-[8px] pb-4 bg-[#28344E] relative ${isOpen[idx] ? "mb-[590px]" : "mb-[8px]"}` 
+          : `flex w-full h-[96px] rounded-lg px-[8px] py-[8px] pb-4 bg-[#703C47] relative ${isOpen[idx] ? "mb-[590px]" : "mb-[8px]"}`}>
           <div className="flex flex-col w-[110px] h-full">
             <span className={
               myMatchInfoData[idx].win ? "text-blue-500 text-[14px]" : "text-red-500 text-[14px]"
@@ -158,7 +69,7 @@ export const RecentGames = ({matchInfos, puuid}: RecentGamesProps) => {
               <div className="flex w-[98px]">
               <div>
                 <Image 
-                  src={getMyChampImage(idx)}
+                  src={getMyChampImage(idx, myMatchInfoData)}
                   alt="챔피언 이미지"
                   style={{ width: "auto", height: "auto" }}
                   width={48}
@@ -190,7 +101,7 @@ export const RecentGames = ({matchInfos, puuid}: RecentGamesProps) => {
               <div>
                 <div className="ml-1">
                   <Image 
-                    src={getMainRuneImageUrl(myMatchInfoData[idx].perks.styles[0].selections[0].perk)}
+                    src={getRuneImageUrl(myMatchInfoData[idx].perks.styles[0].selections[0].perk)}
                     alt="메인룬 이미지"
                     width={22}
                     height={22}
@@ -200,7 +111,7 @@ export const RecentGames = ({matchInfos, puuid}: RecentGamesProps) => {
                 </div>
                 <div className="ml-1">
                 <Image 
-                    src={getMainRuneImageUrl(myMatchInfoData[idx].perks.styles[1].style)}
+                    src={getRuneImageUrl(myMatchInfoData[idx].perks.styles[1].style)}
                     alt="부룬 이미지"
                     width={22}
                     height={22}
@@ -222,9 +133,9 @@ export const RecentGames = ({matchInfos, puuid}: RecentGamesProps) => {
                 <div className="w-[0.5px] h-[58px] bg-neutral-600 mr-2"></div>
                 <div className="flex flex-col w-[139px] items-start h-full text-[12px] text-neutral-400">
                   <div>
-                    <span className="text-red-600">킬관여율</span> {calculateKillEngagementRate(idx)}%</div>
+                    <span className="text-red-600">킬관여율</span> {calculateKillEngagementRate(idx, matchInfos, myMatchInfoData)}%</div>
                   <div>제어 와드 {myMatchInfoData[idx].detectorWardsPlaced}</div>
-                  <div>CS {totalMinions(idx)} ({(totalMinions(idx) / (matchInfo.info.gameDuration / 60)).toFixed(1)})</div>
+                  <div>CS {totalMinions(idx, myMatchInfoData)} ({(totalMinions(idx, myMatchInfoData) / (matchInfo.info.gameDuration / 60)).toFixed(1)})</div>
                 </div>
             </div>
             
