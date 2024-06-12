@@ -1,9 +1,11 @@
+import summonerIdSlice from "@/features/summonerIdSlice";
 import summonerSlice from "@/features/summonerSlice";
 import { configureStore } from "@reduxjs/toolkit";
 
 export const store = configureStore({ 
   reducer: {
-    summoner: summonerSlice
+    summoner: summonerSlice,
+    summonerId: summonerIdSlice,
   }
 });
 

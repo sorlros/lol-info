@@ -83,8 +83,7 @@ export const RecentGames = ({matchInfos, puuid}: RecentGamesProps) => {
                     alt="소환사 스펠"
                     width={22}
                     height={22}
-                    style={{ width: "22px", height: "22px" }}
-                    layout="fixed"
+                    style={{ width: "auto", height: "auto" }}
                   />
                 </div>
                 <div className="ml-1">
@@ -93,8 +92,7 @@ export const RecentGames = ({matchInfos, puuid}: RecentGamesProps) => {
                       alt="소환사 스펠"
                       width={22}
                       height={22}
-                      style={{ width: "22px", height: "22px" }}
-                      layout="fixed"
+                      style={{ width: "auto", height: "auto" }}
                   />
                 </div>
               </div>
@@ -105,8 +103,7 @@ export const RecentGames = ({matchInfos, puuid}: RecentGamesProps) => {
                     alt="메인룬 이미지"
                     width={22}
                     height={22}
-                    style={{ width: "22px", height: "22px" }}
-                    layout="fixed"
+                    style={{ width: "auto", height: "auto" }}
                   />
                 </div>
                 <div className="ml-1">
@@ -115,8 +112,7 @@ export const RecentGames = ({matchInfos, puuid}: RecentGamesProps) => {
                     alt="부룬 이미지"
                     width={22}
                     height={22}
-                    style={{ width: "22px", height: "22px", borderRadius: "50%" }}
-                    layout="fixed"
+                    style={{ width: "auto", height: "auto" }}
                   />
                 </div>
               </div>
@@ -152,7 +148,6 @@ export const RecentGames = ({matchInfos, puuid}: RecentGamesProps) => {
                     width={22}
                     height={22}
                     style={{ width: "22px", height: "22px" }}
-                    layout="fixed"
                   />
                   <Image 
                     src={
@@ -164,7 +159,6 @@ export const RecentGames = ({matchInfos, puuid}: RecentGamesProps) => {
                     width={22}
                     height={22}
                     style={{ width: "22px", height: "22px" }}
-                    layout="fixed"
                   />
                   <Image
                     src={
@@ -176,7 +170,6 @@ export const RecentGames = ({matchInfos, puuid}: RecentGamesProps) => {
                     width={22}
                     height={22}
                     style={{ width: "22px", height: "22px" }}
-                    layout="fixed"
                   />
                   <Image
                     src={
@@ -188,7 +181,6 @@ export const RecentGames = ({matchInfos, puuid}: RecentGamesProps) => {
                     width={22}
                     height={22}
                     style={{ width: "22px", height: "22px" }}
-                    layout="fixed"
                   />
                   <Image
                     src={
@@ -200,7 +192,6 @@ export const RecentGames = ({matchInfos, puuid}: RecentGamesProps) => {
                     width={22}
                     height={22}
                     style={{ width: "22px", height: "22px" }}
-                    layout="fixed"
                   />
                   <Image
                     src={
@@ -212,7 +203,6 @@ export const RecentGames = ({matchInfos, puuid}: RecentGamesProps) => {
                     width={22}
                     height={22}
                     style={{ width: "22px", height: "22px" }}
-                    layout="fixed"
                   />
                   <Image
                     src={
@@ -224,7 +214,6 @@ export const RecentGames = ({matchInfos, puuid}: RecentGamesProps) => {
                     width={22}
                     height={22}
                     style={{ width: "22px", height: "22px" }}
-                    layout="fixed"
                   />
 
                   {myMatchInfoData[idx].pentaKills || myMatchInfoData[idx].quadraKills || myMatchInfoData[idx].tripleKills || myMatchInfoData[idx].doubleKills ? (    

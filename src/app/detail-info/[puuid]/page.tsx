@@ -79,8 +79,7 @@ const DetailPage = () => {
     <div className="flex flex-col min-w-full h-full bg-[#1C1C1F]">
       <TopInfo puuid={puuid}/>
       <div className="flex items-center justify-center w-full h-full bg-[#1C1C1F] mt-2">
-        <div className="flex w-2/3 h-full space-x-2">
-          
+        <div className="flex w-[1080px] h-full space-x-2">
           <UserChampInfo />
           <RecentGames matchInfos={matchInfos} puuid={puuid}/>
         </div>

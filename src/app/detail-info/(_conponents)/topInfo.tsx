@@ -1,12 +1,11 @@
 "use client";
 
-import { selectPuuid, selectSummonerName } from "@/features/summonerSlice";
-import { RootState } from "@/redux/store";
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
+import { selectEncryptedSummonerId, setSummonerId } from "@/features/summonerIdSlice";
 
 interface TopInfoProps {
   puuid: string;
@@ -30,7 +29,8 @@ interface AccountDataProps {
 export const TopInfo = ({puuid}: TopInfoProps) => {
   const [summonerData, setSummonerData] = useState<SummonerDataProps>();
   const [accountData, setAccountData] = useState<AccountDataProps>();
-  const summonerName = useSelector(selectSummonerName);
+  // const summonerName = useSelector(selectSummonerName);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const fetchSummonerInfo = async (puuid: string) => {
@@ -44,6 +44,17 @@ export const TopInfo = ({puuid}: TopInfoProps) => {
         }
 
         const data = await response.json();
+        
+
+        dispatch(setSummonerId({
+          encryptedSummonerId: data.id,
+          encryptedAccountId: data.accountId,
+          puuid: data.puuid,
+          profileIconId: data.profileIconId,
+          summonerLevel: data.summonerLevel,
+          revisionDate: data.revisionDate
+        }));
+
         setSummonerData(data);
       } catch (error) {
         // toast.error("소환사 정보를 불러오지 못했습니다.");
@@ -83,7 +94,7 @@ export const TopInfo = ({puuid}: TopInfoProps) => {
   useEffect(() => {
     if (summonerData) {
       console.log("summonerData", summonerData);
-      console.log("data", accountData)
+      // console.log("data", accountData)
     }
   }, [summonerData]);
 
@@ -104,21 +115,12 @@ export const TopInfo = ({puuid}: TopInfoProps) => {
           />
         </div>
         <div className="w-[700px] h-full pl-4 text-2xl">
-          <span className="text-white">{accountData?.gameName}</span><span className="text-neutral-400">#{accountData?.tagLine}</span>
+          <span className="text-white">{accountData?.gameName}</span>
+          <span className="text-neutral-400">#{accountData?.tagLine}</span>
           <Button className="flex flex-col mt-3" variant="default">전적 갱신</Button>
           <span>Lv {summonerData?.summonerLevel}</span>
         </div>
       </div>
-      
-      {/* {summonerData?.profileIconId} */}
-      
-      
-    {/* // "id": "9vSkX-_v6-tzzZjjNySaIlODXkawxnxJA454uAWMWhrt7w",
-    // "accountId": "2MhsBzVYuF_lB37tlfV4KoiWpevDhKjPlQDedBtKElvM",
-    // "puuid": "H5Z8NlV9038dZw9ZnCvO55WsHqQqK5skSH-WeFegTH2HpTIezp2DvxfIrNnFqCqDbdW8tcsscEV5xw",
-    // "profileIconId": 5089,
-    // "revisionDate": 1715954627000,
-    // "summonerLevel": 160 */}
     </div>
   )
 }
