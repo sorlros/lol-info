@@ -7,6 +7,7 @@ interface SummonerState {
   id: string;
   accountId: string;
   summonerName: string;
+  gameName: string;
   puuid: string;
   tagLine: string;
   profileIconId: number;
@@ -17,6 +18,7 @@ const initialState: SummonerState = {
   id: "",
   accountId: "",
   summonerName: "",
+  gameName: "",
   puuid: "",
   tagLine: "",
   profileIconId: 0,
@@ -31,6 +33,7 @@ const summonerSlice = createSlice({
       state.id = action.payload.id;
       state.accountId = action.payload.accountId;
       state.summonerName = action.payload.summonerName;
+      state.gameName = action.payload.gameName;
       state.puuid = action.payload.puuid;
       state.tagLine = action.payload.tagLine;
       state.profileIconId = action.payload.profileIconId;
@@ -46,6 +49,7 @@ export const selectSummoner = (state: RootState) => state.summoner;
 export const selectSummonerName = createSelector(selectSummoner, (summoner) => summoner.summonerName);
 export const selectPuuid = createSelector(selectSummoner, (summoner) => summoner.puuid);
 export const selectTagLine = createSelector(selectSummoner, (summoner) => summoner.tagLine);
+export const selectGameName = createSelector(selectSummoner, (summoner) => summoner.gameName);
 export const selectEncryptedSummonerId = createSelector(selectSummoner, (summoner) => summoner.id);
 export const selectEncryptedAccountId = createSelector(selectSummoner, (summoner) => summoner.accountId);
 

@@ -7,6 +7,7 @@ import { IoMdSearch } from "react-icons/io";
 import { useDispatch, useSelector } from 'react-redux';
 import { selectPuuid, setSummoner } from "@/features/summonerSlice";
 import { useRouter } from "next/navigation";
+import { setSummonerId } from "@/features/summonerIdSlice";
 
 export const SummonerName = () => {
   const [inputValue, setInputValue] = useState("");
@@ -39,6 +40,8 @@ export const SummonerName = () => {
         console.log("puuid", getSummoner.payload);
         
         const puuid = getSummoner.payload.puuid;
+        const gameName = getSummoner.payload.gameName;
+        console.log("GGGAME", gameName)
         const response = await fetch(`/api/matches/${puuid}`, {
           method: "GET"
         })
@@ -48,8 +51,9 @@ export const SummonerName = () => {
         }
 
         const data = await response.json();
+
         console.log("matches", data);
-        router.push(`/detail-info/${puuid}`)
+        router.push(`/detail-info/${puuid}_${gameName}_${tagLine}`)
       }
       // console.log("data", data);
     } catch (error) {
