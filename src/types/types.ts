@@ -114,3 +114,22 @@ export interface Challenges {
 export interface SpellMapping {
   [key: number]: string;
 }
+
+export interface TierData {
+  [0]: tierArray;
+}
+
+export interface tierArray {
+  leagueId: string;
+  queueType: string;
+  tier: string;
+  rank: string;
+  summonerId: string;
+  leaguePoints: number;
+  wins: number;
+  losses: number;
+  veteran: boolean;
+  inactive: boolean;
+  freshBlood: boolean;
+  hotStreak: boolean;
+}

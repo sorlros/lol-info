@@ -18,85 +18,60 @@ interface DataProps {
 const DetailPage = () => {
   const [matchIds, setMatchIds] = useState<string[]>([]);
   const [matchInfos, setMatchInfos] = useState<Match[]>([]);
-  const [data, setData] = useState<DataProps>();
+  const [data, setData] = useState<DataProps | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const pathname = usePathname();
   // const [puuid, setPuuid] = useState<string>("");
 
   const searchParams = useSearchParams();
-  // const params = new URL(document.location).searchParams;
 
-  if (pathname) {
+  useEffect(() => {
+    if (pathname) {
       const parts = pathname.split("/");
-      console.log("parts", parts)
       const pathnames = parts.pop();
       if (pathnames) {
         const [puuid, gameName, tagLine] = pathnames.split("_");
-        console.log("puuid:", puuid);
-        console.log("gameName:", gameName);
-        console.log("tagLine:", tagLine);
+        if (puuid && gameName && tagLine) {
+          setData({ 
+            puuid, 
+            gameName: decodeURIComponent(gameName), 
+            tagLine 
+          });
+        } else {
+          console.error("Invalid parameters in path");
+          setIsLoading(false);
+          return;
+        }
       }
-    
-      // setPuuid(puuid as string);
-  }
+    }
+  }, [pathname]);
 
   useEffect(() => {
     const fetchMatchIds = async () => {
-      const puuid_gameName_tagLine = searchParams ? searchParams.get('puuid_gameName_tagLine') : null;
-      console.log("searchParams", searchParams);
-
-      if (!puuid_gameName_tagLine) {
-        console.error("Invalid parameters");
-        setIsLoading(false);
-        return;
-      }
-
-      const [puuid, gameName, tagLine] = puuid_gameName_tagLine.split('_');
-      setData({puuid, gameName, tagLine});
-      console.log("DATA", data)
-
-      try {
-        const response = await fetch(`/api/matches/${puuid}`, {
-          method: "GET"
-        })
-
-        if (!response.ok) {
-          throw new Error("matches fetching 오류");
+      if (data?.puuid) {
+        const puuid = data.puuid;
+        try {
+          const response = await fetch(`/api/matches/${puuid}`, {
+            method: "GET"
+          })
+  
+          if (!response.ok) {
+            throw new Error("matches fetching 오류");
+          }
+  
+          const data = await response.json();
+          setMatchIds(data);
+        } catch (error) {
+          console.error("error fetching matches", error);
+        } finally {
+          setIsLoading(false);
         }
-
-        const data = await response.json();
-        setMatchIds(data);
-      } catch (error) {
-        console.error("error fetching matches", error);
-      } finally {
-        setIsLoading(false);
-      }
+      } 
     }
-  
-    
-    // if (pathname) {
-    //   const parts = pathname.split("/");
-    //   const puuid = parts.pop();
-    //   setPuuid(puuid as string);
-
-    //   if (puuid) {
-    //     fetchMatchIds(puuid);
-    //   }
-    // }
+    if (data) {
       fetchMatchIds();
-  }, [searchParams])
-
-  
-  // const puuid_gameName_tagLine = searchParams ? searchParams.get('puuid_gameName_tagLine') : null;
-
-  // if (!puuid_gameName_tagLine) {
-  //   return <div>Invalid parameters</div>;
-  // }
-
-  // const [puuid, gameName, tagLine] = puuid_gameName_tagLine.split('_');
-  
-  // const pathname = usePathname();
-
+    }
+  }, [data])
  
 
   useEffect(() => {

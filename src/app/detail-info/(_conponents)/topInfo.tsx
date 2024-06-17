@@ -13,16 +13,6 @@ interface TopInfoProps {
   gameName: string;
   tagLine: string;
 }
-
-// interface SummonerDataProps {
-//   id: string;
-//   accountId: string;
-//   profileIconId: number;
-//   puuid: string;
-//   revisionData: number;
-//   summonerLevel: number;
-// }
-
 interface AccountDataProps {
   puuid: string;
   gameName: string;
@@ -40,26 +30,9 @@ export const TopInfo = ({puuid, gameName, tagLine}: TopInfoProps) => {
   const [summonerData, setSummonerData] = useState<SummonerDataProps | null>(null);
   const [accountData, setAccountData] = useState<AccountDataProps>();
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  // const summonerName = useSelector(selectSummonerName);
+  
   const dispatch = useDispatch();
   const summonerInfo = useSelector(selectSummonerId);
-  // const profileIconId = summonerInfo.profileIconId;
-  // const summonerLevel = summonerInfo.summonerLevel;
-
-  const summonerInfo2 = useSelector(selectSummoner);
-  // const gameName = summonerInfo2.summonerName;
-  // const tagLine = summonerInfo2.tagLine;
-
-  // useEffect(() => {
-  //   const profileIconId = summonerInfo.profileIconId;
-  //   const summonerLevel = summonerInfo.summonerLevel;
-  //   const gameName = summonerInfo2.gameName;
-  //   const tagLine = summonerInfo2.tagLine;
-
-  //   console.log("gameName", gameName)
-  //   setSummonerData({gameName, tagLine, profileIconId, summonerLevel})
-  //   setIsLoading(false);
-  // }, [summonerInfo, summonerInfo2])
 
   useEffect(() => {
     const fetchSummonerInfo = async () => {
@@ -85,17 +58,6 @@ export const TopInfo = ({puuid, gameName, tagLine}: TopInfoProps) => {
           summonerLevel: summonerData.summonerLevel,
           revisionDate: summonerData.revisionDate,
         }));
-
-        // dispatch(setSummoner({
-        //   gameName: summonerData.gameName,
-        //   tagLine: summonerData.tagLine,
-        //   id: "",
-        //   accountId: "",
-        //   summonerName: "",
-        //   puuid: "",
-        //   profileIconId: 0,
-        //   summonerLevel: 0,
-        // }));
 
         setIsLoading(false);
       } catch (error) {

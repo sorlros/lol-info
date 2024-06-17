@@ -16,11 +16,6 @@ export const RecentGames = ({matchInfos, puuid}: RecentGamesProps) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [myMatchInfoData, setMyMatchInfoData] = useState<Participant[]>([]);
 
-  useEffect(() => {
-    if (matchInfos.length > 0 && matchInfos[0].info.participants.length > 0) {
-      console.log("AADD", matchInfos[0].info.participants[0].championName);
-    }
-  }, [matchInfos]);
 
   function findMyData(matchInfo: Match, puuid: string): Participant | undefined  {
     return matchInfo.info.participants.find(participant => participant.puuid === puuid);
