@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { selectPuuid, setSummoner } from "@/features/summonerSlice";
 import { useRouter } from "next/navigation";
 import { setSummonerId } from "@/features/summonerIdSlice";
+import { setMatchInfo } from "@/features/matchInfoSlice";
 
 export const SummonerName = () => {
   const [inputValue, setInputValue] = useState("");
@@ -37,22 +38,23 @@ export const SummonerName = () => {
       const getSummoner = dispatch(setSummoner(data));
 
       if (getSummoner.payload) {
-        console.log("puuid", getSummoner.payload);
+        // console.log("puuid", getSummoner.payload);
         
         const puuid = getSummoner.payload.puuid;
         const gameName = getSummoner.payload.gameName;
-        console.log("GGGAME", gameName)
-        const response = await fetch(`/api/matches/${puuid}`, {
-          method: "GET"
-        })
+        // console.log("GGGAME", gameName)
+        // const response = await fetch(`/api/matches/${puuid}`, {
+        //   method: "GET"
+        // })
 
-        if (!response.ok) {
-          throw new Error("matches fetching 오류");
-        }
+        // if (!response.ok) {
+        //   throw new Error("matches fetching 오류");
+        // }
 
-        const data = await response.json();
-
-        console.log("matches", data);
+        // const data = await response.json();
+        // dispatch(setMatchInfo({ matchIds: data }));
+      
+        // console.log("matches", data);
         router.push(`/detail-info/${puuid}_${gameName}_${tagLine}`)
       }
       // console.log("data", data);
