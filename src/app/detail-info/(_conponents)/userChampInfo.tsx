@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { selectSummonerId } from "@/features/summonerIdSlice";
 import { TierData } from "@/types/types";
 import ChampionStats from "./champMastery";
+import ChampMastery from "./champMastery";
 
 export const UserChampInfo = () => {
   const [tierData, setTierData] = useState<TierData | null>(null);
@@ -89,7 +90,7 @@ export const UserChampInfo = () => {
       </div>
 
       <div className="flex w-[332px] h-[550px]">
-        <ChampionStats />
+        <ChampMastery />
       </div>
     </div>
   );

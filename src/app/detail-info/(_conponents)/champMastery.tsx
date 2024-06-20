@@ -16,7 +16,7 @@ interface MatchDetails {
 
 
 
-const ChampionStats = () => {
+const ChampMastery = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [stats, setStats] = useState<{ playCount: number, winCount: number } | null>(null);
   const [matchIds, setMatchIds] = useState<string[]>([]);
@@ -29,23 +29,29 @@ const ChampionStats = () => {
   const startDate = new Date('2024-05-15T12:00:00Z');  // 스플릿 2 시즌 시작 날짜
   const endDate = new Date('2024-09-10T23:59:59Z'); // 스플릿 2 시즌 끝 날짜
 
-  const startTime = Math.floor(startDate.getTime() / 1000);
+  const startTime = Math.floor(startDate.getTime() / 1000);  // Unix 타임스탬프
   const endTime = Math.floor(endDate.getTime() / 1000);
 
   // 성능 문제상 20개로 제한
-  const fetchMatchList = async (puuid: string, startTime: number, endTime: number) => {
+  const fetchMatchList = async (puuid: string) => {
     try {
-      const response = await fetch(`/api/season-match-list/${puuid}/${startTime}/${endTime}`)
-      console.log("response", response)
+      // const response = await fetch(`/api/season-match-list/${puuid}/${startTime}/${endTime}`, {
+      //   method: "GET"
+      // })
+      const response = await fetch(`/api/matches/${puuid}`, {
+        method: "GET"
+      })
+
       if (!response.ok) {
         throw new Error("Failed to fetch match list");
       }
       const data = await response.json();
       setMatchIds(data);
       dispatch(setMatchInfo({ matchIds: data }))
-      console.log("ids", matchIds)
+      return data;
     } catch (error) {
       console.error("매치 리스트 fetch error")
+      return [];
     }
   };
   
@@ -62,7 +68,7 @@ const ChampionStats = () => {
     }
   };
   
-  const getTopChampions = async () => {
+  const getTopChampions = async (matchIds: string[]) => {
     const championUsage: { [key: number]: number } = {};
 
     if (matchIds) {
@@ -110,31 +116,41 @@ const ChampionStats = () => {
   useEffect(() => {
     const fetchStats = async () => {
       setIsLoading(true);
-      const list = await fetchMatchList(puuid, startTime, endTime);
-      console.log("list", list)
-      console.log("matchIds", matchIds);
-      const champions = await getTopChampions();
-      setTopChampions(champions);
-      console.log("champions", champions)
+      console.log("ready...")
+      try {
+        const fetchedMatchIds = await fetchMatchList(puuid);
 
-      if (champions.length > 0) {
-        const stats = await getChampionPlayStats(champions[0]); // 예시로 첫 번째 챔피언의 통계를 가져옴
-        setStats(stats);
+        console.log("After fetchMatchList matchIds", fetchedMatchIds);
+        
+        const champions = await getTopChampions(fetchedMatchIds);
+        console.log("champions", champions);
+        setTopChampions(champions);
+        
+
+        if (champions.length > 0) {
+          const stats = await getChampionPlayStats(champions[0]); // 예시로 첫 번째 챔피언의 통계를 가져옴
+          setStats(stats);
+        }
+      } catch (error) {
+        console.error("champMastery useEffect 에러")
+      } finally {
+        setIsLoading(false);
       }
-      setIsLoading(false);
     };
 
     fetchStats();
-  }, [puuid, startTime, endTime, dispatch]);
+  }, [puuid]);
 
-  if (!stats || isLoading) {
+
+  if (isLoading) {
     return <div>Loading...</div>;
   }
 
   return (
-    <div>
-      <div>Play Count: {stats.playCount}</div>
-      <div>Win Count: {stats.winCount}</div>
+    <div className="flex w-full h-full flex-col">
+      {/* <div>Play Count: {stats.playCount}</div>
+      <div>Win Count: {stats.winCount}</div> */}
+      <div>matchids: {matchIds}</div>
       <div>
         Top Champions: {topChampions.join(', ')}
       </div>
@@ -142,4 +158,4 @@ const ChampionStats = () => {
   );
 };
 
-export default ChampionStats;
+export default ChampMastery;
