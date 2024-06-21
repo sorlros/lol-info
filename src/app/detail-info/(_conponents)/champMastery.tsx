@@ -1,15 +1,16 @@
-import { selectMatchInfo, setMatchInfo } from "@/features/matchInfoSlice";
+import { setMatchInfo } from "@/features/matchInfoSlice";
 import { selectSummonerId } from "@/features/summonerIdSlice";
-import { selectSummoner } from "@/features/summonerSlice";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-
+import championData from "@/json/champion.json"
 interface MatchDetails {
   info: {
     participants: {
       puuid: string;
       championId: number;
       win: boolean;
+      championName: string;
     }[];
   };
 }
@@ -18,7 +19,7 @@ interface MatchDetails {
 
 const ChampMastery = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [stats, setStats] = useState<{ playCount: number, winCount: number } | null>(null);
+  const [stats, setStats] = useState<{ championId: number, championName: string, playCount: number, winCount: number }[]>([]);
   const [matchIds, setMatchIds] = useState<string[]>([]);
   const [topChampions, setTopChampions] = useState<number[]>([]);
   const puuid = useSelector(selectSummonerId).puuid;
@@ -93,10 +94,11 @@ const ChampMastery = () => {
     return sortedChampions;
   };
   
-  const getChampionPlayStats = async (championId: number)=> {
-    // const matchIds = await fetchMatchList(puuid, startTime, endTime);
+  const getChampionPlayStats = async (championId: number, matchIds: string[])=> {
+   
     let playCount = 0;
     let winCount = 0;
+    let championName = "";
   
     for (const matchId of matchIds) {
       const matchDetails = await fetchMatchDetails(matchId) as MatchDetails;
@@ -107,11 +109,18 @@ const ChampMastery = () => {
         if (participant.win) {
           winCount += 1;
         }
+        championName = participant.championName;
       }
     }
-  
-    return { playCount, winCount };
+    
+    console.log(`championName = ${championName}, ${championId}: playCount = ${playCount}, winCount = ${winCount}`);
+    return { championId, playCount, winCount, championName };
   };  
+
+  const getKoreanName = (englishName: string): string | undefined => {
+    const champion = championData.find((champ) => champ.english === englishName);
+    return champion ? champion.korean : undefined;
+  }
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -120,7 +129,7 @@ const ChampMastery = () => {
       try {
         const fetchedMatchIds = await fetchMatchList(puuid);
 
-        console.log("After fetchMatchList matchIds", fetchedMatchIds);
+        // console.log("After fetchMatchList matchIds", fetchedMatchIds);
         
         const champions = await getTopChampions(fetchedMatchIds);
         console.log("champions", champions);
@@ -128,8 +137,10 @@ const ChampMastery = () => {
         
 
         if (champions.length > 0) {
-          const stats = await getChampionPlayStats(champions[0]); // 예시로 첫 번째 챔피언의 통계를 가져옴
-          setStats(stats);
+          const statsPromises = champions.map(championId => getChampionPlayStats(championId, fetchedMatchIds));
+          const allStats = await Promise.all(statsPromises)
+          setStats(allStats);
+          console.log("allStats", allStats);
         }
       } catch (error) {
         console.error("champMastery useEffect 에러")
@@ -148,12 +159,27 @@ const ChampMastery = () => {
 
   return (
     <div className="flex w-full h-full flex-col">
-      {/* <div>Play Count: {stats.playCount}</div>
-      <div>Win Count: {stats.winCount}</div> */}
-      <div>matchids: {matchIds}</div>
-      <div>
-        Top Champions: {topChampions.join(', ')}
-      </div>
+      {/* <div>Top Champions: {topChampions.join(', ')}</div> */}
+      {stats.map(stat => (
+        <div key={stat.championId} className="flex w-full h-[48px] mb-1 bg-neutral-800 rounded-lg p-[12px] items-center">
+          <div className="flex w-[44px] h-[40px]">
+            <div className="flex w-[40px] h-[40px] rounded-full overflow-hidden mr-1">
+              <Image 
+                src={`https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/${stat.championName}.png`}
+                alt="챔피언이미지"
+                style={{ width: "auto", height: "auto"}}
+                width={32}
+                height={32}
+              />
+            </div>
+          </div>
+          <div>
+            <span className="text-white text-[12px] font-bold">{getKoreanName(stat.championName)}</span>
+          </div>
+          <div>Play Count: {stat.playCount}</div>
+          <div>Win Count: {stat.winCount}</div>
+        </div>
+      ))}
     </div>
   );
 };

@@ -203,7 +203,7 @@ const MatchDetails = ({ matchInfo, isOpen, idx, myMatchInfoData }: MatchDetailPr
                   <div className="flex w-[40px] h-[40px] rounded-full overflow-hidden mr-1">
                     <Image 
                       src={`https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/${participant.championName}.png`}
-                      alt="ChampImage"
+                      alt="챔피언이미지"
                       style={{ width: "auto", height: "auto"}}
                       width={32}
                       height={32}
