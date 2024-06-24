@@ -10,6 +10,7 @@ export async function GET(req: NextRequest, { params }: { params: { puuid: strin
   try {
     const startTime = 1715793600;
     const endTime = 1726003199;
+    
     const response = await fetch(`https://asia.api.riotgames.com/lol/match/v5/matches/by-puuid/${puuid}/ids?startTime=${startTime}&endTime=${endTime}&start=0&count=20`, {
       method: "GET",
       headers: {

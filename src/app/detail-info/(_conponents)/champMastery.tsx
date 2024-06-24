@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import championData from "@/json/champion.json"
+import ChampMasterySkeleton from "@/components/skeleton/champMasterySkeleton";
 interface MatchDetails {
   info: {
     participants: {
@@ -154,12 +155,13 @@ const ChampMastery = () => {
 
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <ChampMasterySkeleton />
+    )
   }
 
   return (
     <div className="flex w-full h-full flex-col">
-      {/* <div>Top Champions: {topChampions.join(', ')}</div> */}
       {stats.map(stat => (
         <div key={stat.championId} className="flex w-full h-[48px] mb-1 bg-neutral-800 rounded-lg p-[12px] items-center">
           <div className="flex w-[44px] h-[40px]">

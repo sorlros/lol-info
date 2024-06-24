@@ -8,6 +8,7 @@ import { toast } from 'sonner';
 import { UserChampInfo } from '../(_conponents)/userChampInfo';
 import { RecentGames } from '../(_conponents)/recentGames';
 import { TopInfo } from '../(_conponents)/topInfo';
+import PageSkeleton from '@/components/skeleton/pageSkeleton';
 
 interface DataProps {
   puuid: string;
@@ -19,24 +20,24 @@ const DetailPage = () => {
   const [matchIds, setMatchIds] = useState<string[]>([]);
   const [matchInfos, setMatchInfos] = useState<Match[]>([]);
   const [data, setData] = useState<DataProps | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const pathname = usePathname();
-  // const [puuid, setPuuid] = useState<string>("");
-
-  const searchParams = useSearchParams();
 
   useEffect(() => {
+    setIsLoading(true);
     if (pathname) {
       const parts = pathname.split("/");
       const pathnames = parts.pop();
       if (pathnames) {
-        const [puuid, gameName, tagLine] = pathnames.split("_");
+        const [puuid, gameName, tagLine] = pathnames.split("&");
+        console.log(":::::", puuid, gameName, tagLine)
         if (puuid && gameName && tagLine) {
           setData({ 
             puuid, 
             gameName: decodeURIComponent(gameName), 
             tagLine 
           });
+          setIsLoading(false);
         } else {
           console.error("Invalid parameters in path");
           setIsLoading(false);
@@ -48,6 +49,8 @@ const DetailPage = () => {
 
   useEffect(() => {
     const fetchMatchIds = async () => {
+      setIsLoading(true);
+
       if (data?.puuid) {
         const puuid = data.puuid;
         try {
@@ -62,7 +65,7 @@ const DetailPage = () => {
           const data = await response.json();
           setMatchIds(data);
         } catch (error) {
-          console.error("error fetching matches", error);
+          console.error("matches fetching error", error);
         } finally {
           setIsLoading(false);
         }
@@ -105,11 +108,15 @@ const DetailPage = () => {
   }, [matchInfos])
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <PageSkeleton />
+    )
   }
 
   if (!data) {
-    return <div>Invalid parameters</div>;
+    return (
+      <PageSkeleton />
+    )
   }
 
   return (

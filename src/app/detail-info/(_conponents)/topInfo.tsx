@@ -7,6 +7,7 @@ import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { selectEncryptedSummonerId, selectSummonerId, setSummonerId } from "@/features/summonerIdSlice";
 import { selectSummoner, setSummoner } from "@/features/summonerSlice";
+import TopInfoSkeleton from "@/components/skeleton/topInfoSkeleton";
 
 interface TopInfoProps {
   puuid: string;
@@ -37,6 +38,7 @@ export const TopInfo = ({puuid, gameName, tagLine}: TopInfoProps) => {
   useEffect(() => {
     const fetchSummonerInfo = async () => {
       try {
+        setIsLoading(true);
         // 서버에서 소환사 정보를 가져오는 API 호출
         const summonerResponse = await fetch(`/api/summoner/${puuid}`, {
           method: "GET",
@@ -58,10 +60,10 @@ export const TopInfo = ({puuid, gameName, tagLine}: TopInfoProps) => {
           summonerLevel: summonerData.summonerLevel,
           revisionDate: summonerData.revisionDate,
         }));
-
-        setIsLoading(false);
       } catch (error) {
         console.error("소환사 정보를 불러오지 못했습니다.", error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -70,9 +72,7 @@ export const TopInfo = ({puuid, gameName, tagLine}: TopInfoProps) => {
 
   if (isLoading) {
     return (
-      <div className="flex w-full h-[300px] bg-neutral-800 justify-center items-center">
-        <span className="text-white">Loading...</span>
-      </div>
+      <TopInfoSkeleton />
     );
   }
 
@@ -100,6 +100,8 @@ export const TopInfo = ({puuid, gameName, tagLine}: TopInfoProps) => {
           <span className="text-neutral-400">#{tagLine}</span>
           <Button className="flex flex-col mt-3" variant="default">전적 갱신</Button>
           <span>Lv {summonerLevel}</span>
+          <br />
+          <span>소환사아이콘 {summonerData?.profileIconId}</span>
         </div>
       </div>
     </div>

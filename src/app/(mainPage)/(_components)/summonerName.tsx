@@ -13,12 +13,14 @@ import { setMatchInfo } from "@/features/matchInfoSlice";
 export const SummonerName = () => {
   const [inputValue, setInputValue] = useState("");
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const dispatch = useDispatch();
   const router = useRouter();
   
   const handleSearch = async () => {
     try {
+      setIsLoading(true);
       const [gameName, tagLine] = inputValue.split("#");
 
       if (!gameName || !tagLine) {
@@ -38,28 +40,16 @@ export const SummonerName = () => {
       const getSummoner = dispatch(setSummoner(data));
 
       if (getSummoner.payload) {
-        // console.log("puuid", getSummoner.payload);
-        
         const puuid = getSummoner.payload.puuid;
         const gameName = getSummoner.payload.gameName;
-        // console.log("GGGAME", gameName)
-        // const response = await fetch(`/api/matches/${puuid}`, {
-        //   method: "GET"
-        // })
-
-        // if (!response.ok) {
-        //   throw new Error("matches fetching 오류");
-        // }
-
-        // const data = await response.json();
-        // dispatch(setMatchInfo({ matchIds: data }));
-      
-        // console.log("matches", data);
-        router.push(`/detail-info/${puuid}_${gameName}_${tagLine}`)
+       
+        router.push(`/detail-info/${puuid}&${gameName}&${tagLine}`)
       }
       // console.log("data", data);
     } catch (error) {
       setError("오류 발생");
+    } finally {
+      setIsLoading(false);
     }
   }
 

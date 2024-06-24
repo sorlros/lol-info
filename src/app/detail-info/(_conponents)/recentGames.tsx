@@ -4,6 +4,7 @@ import Image from 'next/image';
 import runeInfoData from "@/json/runeInfo.json";
 import MatchDetails from "./matchDetails";
 import { calculateDaysAgo, calculateKillEngagementRate, formatGameDuration, getMyChampImage, getRuneImageUrl, getSpellImageUrl, totalMinions } from "@/lib/tools";
+import RecentGamesSkeleton from "@/components/skeleton/recentGamesSkeleton";
 
 
 interface RecentGamesProps {
@@ -40,7 +41,9 @@ export const RecentGames = ({matchInfos, puuid}: RecentGamesProps) => {
   const emptyItem = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60qxkwAAAABJRU5ErkJggg=="
 
   if (!myMatchInfoData.length) {
-    return <div>No match data available</div>;
+    return (
+      <RecentGamesSkeleton />
+    )
   }
 
   return (
@@ -71,8 +74,8 @@ export const RecentGames = ({matchInfos, puuid}: RecentGamesProps) => {
                   height={48}
                 />
               </div>
-              <div>
-                <div className="ml-1">
+              <div className="ml-1">
+                <div>
                   <Image 
                     src={getSpellImageUrl(myMatchInfoData[idx].summoner1Id)}
                     alt="소환사 스펠"
@@ -81,7 +84,7 @@ export const RecentGames = ({matchInfos, puuid}: RecentGamesProps) => {
                     style={{ width: "auto", height: "auto" }}
                   />
                 </div>
-                <div className="ml-1">
+                <div>
                   <Image 
                       src={getSpellImageUrl(myMatchInfoData[idx].summoner2Id)}
                       alt="소환사 스펠"
@@ -91,7 +94,7 @@ export const RecentGames = ({matchInfos, puuid}: RecentGamesProps) => {
                   />
                 </div>
               </div>
-              <div>
+              <div className="flex flex-col items-center space-y-1">
                 <div className="ml-1">
                   <Image 
                     src={getRuneImageUrl(myMatchInfoData[idx].perks.styles[0].selections[0].perk)}
@@ -105,8 +108,8 @@ export const RecentGames = ({matchInfos, puuid}: RecentGamesProps) => {
                 <Image 
                     src={getRuneImageUrl(myMatchInfoData[idx].perks.styles[1].style)}
                     alt="부룬 이미지"
-                    width={22}
-                    height={22}
+                    width={25}
+                    height={25}
                     style={{ width: "auto", height: "auto" }}
                   />
                 </div>
