@@ -80,7 +80,7 @@ export const TopInfo = ({puuid, gameName, tagLine}: TopInfoProps) => {
   // const { gameName, tagLine } = summonerInfo2;
 
   return (
-    <div className="flex w-full h-[300px] bg-neutral-800 justify-center">
+    <div className="flex w-full h-[250px] bg-neutral-800 justify-center">
       <div className="flex w-2/3 h-full pt-8">
         <div className="relative w-[100px] h-[100px]">
           <Image 
