@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { selectEncryptedSummonerId, selectSummonerId, setSummonerId } from "@/features/summonerIdSlice";
 import { selectSummoner, setSummoner } from "@/features/summonerSlice";
 import TopInfoSkeleton from "@/components/skeleton/topInfoSkeleton";
+import { useRouter } from "next/navigation";
 
 interface TopInfoProps {
   puuid: string;
@@ -31,6 +32,7 @@ export const TopInfo = ({puuid, gameName, tagLine}: TopInfoProps) => {
   const [summonerData, setSummonerData] = useState<SummonerDataProps | null>(null);
   const [accountData, setAccountData] = useState<AccountDataProps>();
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const router = useRouter();
   
   const dispatch = useDispatch();
   const summonerInfo = useSelector(selectSummonerId);
@@ -77,7 +79,11 @@ export const TopInfo = ({puuid, gameName, tagLine}: TopInfoProps) => {
   }
 
   const { profileIconId, summonerLevel } = summonerInfo;
-  // const { gameName, tagLine } = summonerInfo2;
+
+  const handleRefresh = () => {
+    router.push(window.location.href);
+  };
+  
 
   return (
     <div className="flex w-full h-[250px] bg-neutral-800 justify-center">
@@ -94,14 +100,12 @@ export const TopInfo = ({puuid, gameName, tagLine}: TopInfoProps) => {
             className="rounded-lg"
             priority
           />
+          <span className="flex w-[40px] h-[20px] absolute bottom-0 left-1/2 transform -translate-x-1/2 rounded-lg text-white bg-neutral-500 items-center justify-center">{summonerLevel}</span>
         </div>
         <div className="w-[700px] h-full pl-4 text-2xl">
           <span className="text-white">{gameName}</span>
           <span className="text-neutral-400">#{tagLine}</span>
-          <Button className="flex flex-col mt-3" variant="default">전적 갱신</Button>
-          <span>Lv {summonerLevel}</span>
-          <br />
-          <span>소환사아이콘 {summonerData?.profileIconId}</span>
+          <Button onClick={handleRefresh} className="flex flex-col mt-3" variant="default">전적 갱신</Button>
         </div>
       </div>
     </div>

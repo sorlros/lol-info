@@ -27,7 +27,9 @@ export const calculateDaysAgo = (gameCreation: number) => {
 }
 
 export const getSpellImageUrl = (spellId: number): string => {
+  // console.log("spellId", spellId);
   const spellName = spellMapping[spellId];
+  // console.log("spellName", spellName);
   return `https://ddragon.leagueoflegends.com/cdn/14.10.1/img/spell/${spellName}.png`;
 };
 
@@ -54,6 +56,7 @@ export const getIconFromId = (id: number): string => {
 };
 
 export const getRuneImageUrl = (id: number) => {
+  // console.log("runeId", id)
   return `https://ddragon.leagueoflegends.com/cdn/img/${getIconFromId(id)}`;
 }
 
@@ -63,15 +66,15 @@ export const getMyChampImage = (idx: number, data: Participant[]) => {
   return url;
 }
 
-export const calculateKillEngagementRate = (idx: number, matchInfo: Match[], myMatchInfo: Participant[]) => {
+export const calculateKillEngagementRate = (idx: number, currentMatchInfos: Match[], myMatchInfo: Participant[]) => {
   let allKills;
   let rate;
 
   if (myMatchInfo[idx].teamId === 100) {
-    allKills = matchInfo[idx].info.teams[0].objectives.champion.kills;
+    allKills = currentMatchInfos[idx].info.teams[0].objectives.champion.kills;
     rate = Math.ceil((myMatchInfo[idx].kills + myMatchInfo[idx].assists) / allKills * 100);
   } else if (myMatchInfo[idx].teamId === 200) {
-    allKills = matchInfo[idx].info.teams[1].objectives.champion.kills;
+    allKills = currentMatchInfos[idx].info.teams[1].objectives.champion.kills;
     rate = Math.ceil((myMatchInfo[idx].kills + myMatchInfo[idx].assists) / allKills * 100);
   }
 

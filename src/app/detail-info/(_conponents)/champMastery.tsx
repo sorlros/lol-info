@@ -30,7 +30,7 @@ const ChampMastery = () => {
   const [matchIds, setMatchIds] = useState<string[]>([]);
   const [topChampions, setTopChampions] = useState<number[]>([]);
   const puuid = useSelector(selectSummonerId).puuid;
-  // const matchIds = useSelector(selectMatchInfo).matchIds;
+
   const dispatch = useDispatch();
   
   
@@ -51,7 +51,7 @@ const ChampMastery = () => {
       })
 
       if (!response.ok) {
-        throw new Error("Failed to fetch match list");
+        throw new Error("fetchMatchList response 오류");
       }
       const data = await response.json();
       setMatchIds(data);
@@ -67,12 +67,12 @@ const ChampMastery = () => {
     try {
       const response = await fetch(`/api/match-info/${matchId}`);
       if (!response.ok) {
-        throw new Error("Failed to fetch match details");
+        throw new Error("fetchMatchDetails response 오류");
       }
       const data = (await response.json()) as MatchDetails;
       return data;
     } catch (error) {
-      console.error("Error fetching match details:", error);
+      console.error("fetchMatchDetails 오류:", error);
     }
   };
   
@@ -117,7 +117,7 @@ const ChampMastery = () => {
     for (const matchId of matchIds) {
       const matchDetails = await fetchMatchDetails(matchId) as MatchDetails;
       const participant = matchDetails.info.participants.find(p => p.puuid === puuid && p.championId === championId);
-      console.log(`puuid: ${puuid}, championId: ${championId}`)
+      // console.log(`puuid: ${puuid}, championId: ${championId}`)
       // console.log(`Match ID: ${matchId}, Participant:`, participant);
 
       if (participant) {
@@ -158,14 +158,13 @@ const ChampMastery = () => {
   useEffect(() => {
     const fetchStats = async () => {
       setIsLoading(true);
-      console.log("ready...")
       try {
         const fetchedMatchIds = await fetchMatchList(puuid);
 
         // console.log("After fetchMatchList matchIds", fetchedMatchIds);
         
         const champions = await getTopChampions(fetchedMatchIds);
-        console.log("champions", champions);
+        // console.log("champions", champions);
         setTopChampions(champions);
         
 
@@ -173,7 +172,7 @@ const ChampMastery = () => {
           const statsPromises = champions.map(championId => getChampionPlayStats(championId, fetchedMatchIds));
           const allStats = await Promise.all(statsPromises)
           setStats(allStats);
-          console.log("allStats", allStats);
+          // console.log("allStats", allStats);
         }
       } catch (error) {
         console.error("champMastery useEffect 에러")

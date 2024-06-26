@@ -3,13 +3,13 @@ import { NextRequest, NextResponse } from "next/server";
 export async function GET(req: NextRequest, { params }: { params: {matchId: string}}) {
   const { matchId } = params;
 
-  console.log("matchId", matchId)
+  // console.log("matchId", matchId)
   if (!matchId || typeof matchId !== "string") { 
     return new Response("matchIds 오류", { status: 400 });
   }
 
   try {
-      console.log("in matchId", matchId);
+      // console.log("in matchId", matchId);
       const response = await fetch(`https://asia.api.riotgames.com/lol/match/v5/matches/${matchId}`, {
         method: "GET",
         headers: {

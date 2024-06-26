@@ -4,21 +4,21 @@ import runeInfoData from "@/json/runeInfo.json";
 import { getRuneImageUrl, getSpellImageUrl } from "@/lib/tools";
 
 interface MatchDetailProps {
-  matchInfo: Match;
+  currentMatchInfo: Match;
   isOpen: boolean[];
   myMatchInfoData: Participant[];
   idx: number;
 }
 
-const MatchDetails = ({ matchInfo, isOpen, idx, myMatchInfoData }: MatchDetailProps) => {
+const MatchDetails = ({ currentMatchInfo, isOpen, idx, myMatchInfoData }: MatchDetailProps) => {
   const winEmptyItem = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60qxkwAAAABJRU5ErkJggg==";
 
   const loseEmptyItem = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/Z8iL5wAAAABJRU5ErkJggg==";
 
 
   const myParticipant = myMatchInfoData[idx];
-  const myTeam = matchInfo.info.participants.filter(participant => participant.teamId === myParticipant.teamId);
-  const enemyTeam = matchInfo.info.participants.filter(participant => participant.teamId !== myParticipant.teamId);
+  const myTeam = currentMatchInfo.info.participants.filter(participant => participant.teamId === myParticipant.teamId);
+  const enemyTeam = currentMatchInfo.info.participants.filter(participant => participant.teamId !== myParticipant.teamId);
 
   return (
     <div className={`${isOpen[idx] ? "w-full h-[694px] absolute rounded-lg mt-2 left-0 top-[96px]" : "hidden"}`}>
@@ -51,18 +51,17 @@ const MatchDetails = ({ matchInfo, isOpen, idx, myMatchInfoData }: MatchDetailPr
                   <div className="flex flex-col w-[18px] h-[42px] items-center gap-y-1">
                     <div className="w-[18px] h-[18px] rounded-full">
                       <Image 
-                        src={getSpellImageUrl(myMatchInfoData[idx].summoner1Id)}
+                        src={getSpellImageUrl(participant.summoner1Id)}
                         alt="소환사 스펠"
                         width={18}
                         height={18}
                         style={{ width: "auto", height: "auto" }}
-
                       />
                     </div>
                     
                     <div className="w-[18px] h-[18px] rounded-full">
                       <Image 
-                        src={getSpellImageUrl(myMatchInfoData[idx].summoner2Id)}
+                        src={getSpellImageUrl(participant.summoner2Id)}
                         alt="소환사 스펠"
                         width={18}
                         height={18}
@@ -74,14 +73,14 @@ const MatchDetails = ({ matchInfo, isOpen, idx, myMatchInfoData }: MatchDetailPr
                   </div>
                   <div className="flex flex-col w-[18px] h-full ml-1 mr-2 gap-y-1">
                     <Image 
-                      src={getRuneImageUrl(myMatchInfoData[idx].perks.styles[0].selections[0].perk)}
+                      src={getRuneImageUrl(participant.perks.styles[0].selections[0].perk)}
                       alt="메인룬 이미지"
                       width={18}
                       height={18}
                       style={{ width: "auto", height: "auto" }}
                     />
                       <Image 
-                      src={getRuneImageUrl(myMatchInfoData[idx].perks.styles[1].style)}
+                      src={getRuneImageUrl(participant.perks.styles[1].style)}
                       alt="부룬 이미지"
                       width={18}
                       height={18}
@@ -212,7 +211,7 @@ const MatchDetails = ({ matchInfo, isOpen, idx, myMatchInfoData }: MatchDetailPr
                   <div className="flex flex-col w-[18px] h-[42px] items-center gap-y-1">
                     <div className="w-[18px] h-[18px] rounded-full">
                       <Image 
-                        src={getSpellImageUrl(myMatchInfoData[idx].summoner1Id)}
+                        src={getSpellImageUrl(participant.summoner1Id)}
                         alt="소환사 스펠"
                         width={18}
                         height={18}
@@ -223,7 +222,7 @@ const MatchDetails = ({ matchInfo, isOpen, idx, myMatchInfoData }: MatchDetailPr
                     
                     <div className="w-[18px] h-[18px] rounded-full">
                       <Image 
-                        src={getSpellImageUrl(myMatchInfoData[idx].summoner2Id)}
+                        src={getSpellImageUrl(participant.summoner2Id)}
                         alt="소환사 스펠"
                         width={18}
                         height={18}
@@ -235,14 +234,14 @@ const MatchDetails = ({ matchInfo, isOpen, idx, myMatchInfoData }: MatchDetailPr
                   </div>
                   <div className="flex flex-col w-[18px] h-full ml-1 mr-2 gap-y-1">
                     <Image 
-                      src={getRuneImageUrl(myMatchInfoData[idx].perks.styles[0].selections[0].perk)}
+                      src={getRuneImageUrl(participant.perks.styles[0].selections[0].perk)}
                       alt="메인룬 이미지"
                       width={18}
                       height={18}
                       style={{ width: "18px", height: "18px" }}
                     />
                       <Image 
-                      src={getRuneImageUrl(myMatchInfoData[idx].perks.styles[1].style)}
+                      src={getRuneImageUrl(participant.perks.styles[1].style)}
                       alt="부룬 이미지"
                       width={18}
                       height={18}

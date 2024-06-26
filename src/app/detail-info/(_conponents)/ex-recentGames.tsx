@@ -14,34 +14,24 @@ interface RecentGamesProps {
 }
 
 export const RecentGames = ({matchInfos, puuid}: RecentGamesProps) => {
-  const [currentMatchInfos, setCurrentMatchInfos] = useState<Match[]>([]);
-  const [isOpen, setIsOpen] = useState<boolean[]>(Array(currentMatchInfos.length).fill(false));
+  const [isOpen, setIsOpen] = useState<boolean[]>(Array(matchInfos.length).fill(false));
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [currentMatchInfos, setCurrentMatchInfos] = useState<Match[]>(matchInfos);
   const [myMatchInfoData, setMyMatchInfoData] = useState<Participant[]>([]);
   const [start, setStart] = useState<number>(20);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  function findMyData(currentMatchInfo: Match, puuid: string): Participant | undefined  {
-    return currentMatchInfo.info.participants.find(participant => participant.puuid === puuid);
+
+  function findMyData(matchInfo: Match, puuid: string): Participant | undefined  {
+    return matchInfo.info.participants.find(participant => participant.puuid === puuid);
   }
 
   useEffect(() => {
-    setCurrentMatchInfos(matchInfos);
-  }, [matchInfos]);
-
-  useEffect(() => {
     setIsLoading(true);
-    try {
-      if (currentMatchInfos.length > 0) {
-        const data = currentMatchInfos.map(currentMatchInfo => findMyData(currentMatchInfo, puuid)) as Participant[];
-        setMyMatchInfoData(data);
-        setIsOpen(Array(currentMatchInfos.length).fill(false));
-      }
-    } catch (error) {
-      console.error("myMatchInfoData 불러오기 오류")
-    } finally {
-      setIsLoading(true);
-    }
-  }, [currentMatchInfos, puuid]);
+    const data = matchInfos.map(matchInfo => findMyData(matchInfo, puuid)) as Participant[];
+    setMyMatchInfoData(data);
+    console.log("INFO", myMatchInfoData);
+    setIsLoading(false);
+  }, [matchInfos, puuid]);
 
   const toggleIsOpen = (index: number) => {
     setIsOpen(prev => {
@@ -54,44 +44,20 @@ export const RecentGames = ({matchInfos, puuid}: RecentGamesProps) => {
   const emptyItem = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60qxkwAAAABJRU5ErkJggg=="
 
   const loadMoreMatches = async () => {
-    setIsLoading(true);
     try {
-      const response = await fetch(`/api/matches/${puuid}?start=${start}`, {
-        method: "GET"
-      });
-      const newMatchIds = await response.json();
-
-      if (newMatchIds) {
-        try {
-          const newMatchData = await Promise.all(
-            newMatchIds.map(async (newMatchId: string) => {
-              const response = await fetch(`/api/match-info/${newMatchId}`, {
-                method: "GET"
-              });
-              if (!response.ok) {
-                throw new Error("매칭 정보 추가 api 오류");
-              }
-              const data = await response.json();
-              return data;
-            })
-          );
-          setStart(prev => prev + 10);
-          setCurrentMatchInfos(prev => [...prev, ...newMatchData]);
-        } catch (error) {
-          console.error("새 매칭 정보 Promise.all 오류", error);
-        } finally {
-          setIsLoading(false);
-        }
-      }  
+      setIsLoading(true);
+      const response = await fetch(`/api/matches?puuid=${puuid}&start=${start}&count=10`);
+      const newMatches = await response.json();
+      setMatchInfos(prev => [...prev, ...newMatches]);  // 새로운 데이터로 업데이트
+      setStart(prev => prev + 10);
+      setIsLoading(false);
     } catch (error) {
-      setStart(20);
-      console.error("매치정보 추가 실패:", error);
-    } finally {
+      console.error("Error loading more matches:", error);
       setIsLoading(false);
     }
   };
 
-  if (!myMatchInfoData.length || !isLoading) {
+  if (!myMatchInfoData.length) {
     return (
       <RecentGamesSkeleton />
     )
@@ -99,18 +65,18 @@ export const RecentGames = ({matchInfos, puuid}: RecentGamesProps) => {
 
   return (
     <div className="flex flex-col w-[694px] min-h-screen rounded-lg bg-[#1C1C1F]">
-      {currentMatchInfos.map((currentMatchInfo: Match, idx: number) => (
+      {matchInfos.map((matchInfo: Match, idx: number) => (
         <div key={idx} className={myMatchInfoData[idx].win 
           ? `flex w-full h-[96px] rounded-lg px-[8px] py-[8px] pb-4 bg-[#28344E] relative ${isOpen[idx] ? "mb-[590px]" : "mb-[8px]"}` 
           : `flex w-full h-[96px] rounded-lg px-[8px] py-[8px] pb-4 bg-[#703C47] relative ${isOpen[idx] ? "mb-[590px]" : "mb-[8px]"}`}>
           <div className="flex flex-col w-[110px] h-full">
             <span className={
               myMatchInfoData[idx].win ? "text-blue-500 text-[14px]" : "text-red-500 text-[14px]"
-            }>{currentMatchInfo.info.gameMode === "CLASSIC" ? "솔랭" : "아직미구현"}</span>
-            <span className="text-neutral-400 text-[12px]">{calculateDaysAgo(currentMatchInfo.info.gameCreation)}</span>
+            }>{matchInfo.info.gameMode === "CLASSIC" ? "솔랭" : "아직미구현"}</span>
+            <span className="text-neutral-400 text-[12px]">{calculateDaysAgo(matchInfo.info.gameCreation)}</span>
             <div className="w-[48px] h-[0.5px] bg-neutral-600" />
             <span className="text-neutral-400 text-[12px] font-bold">{myMatchInfoData[idx].win ? "승리" : "패배"}</span>
-            <span className="text-neutral-400 text-[12px]">{formatGameDuration(currentMatchInfo.info.gameDuration)}</span>
+            <span className="text-neutral-400 text-[12px]">{formatGameDuration(matchInfo.info.gameDuration)}</span>
           </div>
 
           <div className="flex flex-col w-[378px] h-full">
@@ -178,9 +144,9 @@ export const RecentGames = ({matchInfos, puuid}: RecentGamesProps) => {
                 <div className="w-[0.5px] h-[58px] bg-neutral-600 mr-2"></div>
                 <div className="flex flex-col w-[139px] items-start h-full text-[12px] text-neutral-400">
                   <div>
-                    <span className="text-red-600">킬관여율</span> {calculateKillEngagementRate(idx, currentMatchInfos, myMatchInfoData)}%</div>
+                    <span className="text-red-600">킬관여율</span> {calculateKillEngagementRate(idx, matchInfos, myMatchInfoData)}%</div>
                   <div>제어 와드 {myMatchInfoData[idx].detectorWardsPlaced}</div>
-                  <div>CS {totalMinions(idx, myMatchInfoData)} ({(totalMinions(idx, myMatchInfoData) / (currentMatchInfo.info.gameDuration / 60)).toFixed(1)})</div>
+                  <div>CS {totalMinions(idx, myMatchInfoData)} ({(totalMinions(idx, myMatchInfoData) / (matchInfo.info.gameDuration / 60)).toFixed(1)})</div>
                 </div>
             </div>
             
@@ -278,7 +244,7 @@ export const RecentGames = ({matchInfos, puuid}: RecentGamesProps) => {
           <div className="flex justify-end">
             <div className="grid grid-flow-col grid-cols-2 grid-rows-5 w-[168px] h-[88px] pb-2">
               {
-                currentMatchInfo.info.participants.map((participant, idx) => (
+                matchInfo.info.participants.map((participant, idx) => (
                   <div 
                     key={participant.puuid} 
                     className="flex w-[80px] h-[16px] gap-x-1 items-center"
@@ -315,11 +281,11 @@ export const RecentGames = ({matchInfos, puuid}: RecentGamesProps) => {
             </button>
           </div>
           
-          <MatchDetails currentMatchInfo={currentMatchInfo} isOpen={isOpen} idx={idx} myMatchInfoData={myMatchInfoData} />
+          <MatchDetails matchInfo={matchInfo} isOpen={isOpen} idx={idx} myMatchInfoData={myMatchInfoData} />
         </div>
       ))}
       <div>
-        <Button onClick={loadMoreMatches} variant="default" className="w-[694px] h-[40px] bg-neutral-500 z-9999">더보기</Button>
+        <Button variant="default" className="w-[694px] h-[40px] bg-neutral-500">더보기</Button>
       </div>
     </div>
   )
