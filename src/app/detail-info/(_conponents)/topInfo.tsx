@@ -94,13 +94,13 @@ export const TopInfo = ({puuid, gameName, tagLine}: TopInfoProps) => {
             // objectFit="cover"
             width={100}
             height={100}
-            style={{ width: "auto", height: "auto" }}
+            style={{ width: "100px", height: "100px", objectFit: "cover" }}
             // objectFit="contain"
             alt="소환사 아이콘"
             className="rounded-lg"
             priority
           />
-          <span className="flex w-[40px] h-[20px] absolute bottom-0 left-1/2 transform -translate-x-1/2 rounded-lg text-white bg-neutral-500 items-center justify-center">{summonerLevel}</span>
+          <span className="flex w-[40px] h-[20px] absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-[10px] rounded-lg text-white bg-neutral-500 items-center justify-center">{summonerLevel}</span>
         </div>
         <div className="w-[700px] h-full pl-4 text-2xl">
           <span className="text-white">{gameName}</span>

@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 export async function GET(req: NextRequest, { params }: { params: { puuid: string }}) {
   const { puuid } = params;
   const start = req.nextUrl.searchParams.get('start');
-  console.log("start", start)
+  // console.log("start", start)
 
   if (!puuid || typeof puuid !== "string") {
     return NextResponse.json({error: "puuid의 값이 올바르지 않습니다."})

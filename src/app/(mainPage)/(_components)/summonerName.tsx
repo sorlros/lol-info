@@ -67,7 +67,6 @@ export const SummonerName = () => {
           <IoMdSearch size={24} />
         </Button>
       </div>
-      
     </div>
   )
 }
