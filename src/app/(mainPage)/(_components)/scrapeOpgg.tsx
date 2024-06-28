@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 
 export const ScrapeOpgg = () => {
   const [teams, setTeams] = useState<TeamsProps[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -18,19 +18,20 @@ export const ScrapeOpgg = () => {
           throw new Error('Failed to fetch data');
         }
         const data = await response.json();
+        console.log("data", data)
         setTeams(data);
-        setLoading(false);
       } catch (error) {
         console.error('Error fetching data:', error);
         setError('Failed to fetch data');
-        setLoading(false);
+      } finally {
+        setIsLoading(false);
       }
     };
 
     fetchData();
   }, []);
 
-  if (loading) {
+  if (isLoading) {
     return <div className='text-white'>Loading...</div>;
   }
 
@@ -49,3 +50,5 @@ export const ScrapeOpgg = () => {
     </div>
   );
 };
+
+
