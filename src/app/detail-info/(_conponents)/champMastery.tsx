@@ -18,6 +18,7 @@ interface MatchDetails {
       deaths: number;
       assists: number;
       timePlayed: number;
+      neutralMinionsKilled: number;
     }[];
   };
 }
@@ -112,11 +113,13 @@ const ChampMastery = () => {
     let assists = 0;
     let deaths = 0;
     let totalMinionsKilled = 0;
+    let neutralMinionsKilled = 0;
     let timePlayed = 0;
   
     for (const matchId of matchIds) {
       const matchDetails = await fetchMatchDetails(matchId) as MatchDetails;
       const participant = matchDetails.info.participants.find(p => p.puuid === puuid && p.championId === championId);
+      // console.log("participant", participant)
       // console.log(`puuid: ${puuid}, championId: ${championId}`)
       // console.log(`Match ID: ${matchId}, Participant:`, participant);
 
@@ -133,19 +136,22 @@ const ChampMastery = () => {
         kills += participant.kills;
         assists += participant.assists;
         deaths += participant.deaths;
+        neutralMinionsKilled += participant.neutralMinionsKilled
         totalMinionsKilled += participant.totalMinionsKilled;
         championName = participant.championName;
       }
     }
 
+    // console.log("ASDASD", championName ,playCount)
+
     const avgKills = playCount > 0 ? parseFloat((kills / playCount).toFixed(1)) : 0;
     const avgAssists = playCount > 0 ? parseFloat((assists / playCount).toFixed(1)) : 0;
     const avgDeaths = playCount > 0 ? parseFloat((deaths / playCount).toFixed(1)) : 0;
-    const avgMinionsKilled = playCount > 0 ? parseFloat((totalMinionsKilled / playCount).toFixed(1)) : 0;
+    const avgMinionsKilled = playCount > 0 ? parseFloat(((totalMinionsKilled + neutralMinionsKilled) / playCount).toFixed(1)) : 0;
     
     // console.log(`championName = ${championName}, ${championId}: playCount = ${playCount}, winCount = ${winCount}`);
     
-    console.log(`totalMinion: ${totalMinionsKilled}`)
+    // console.log(`totalMinion: ${totalMinionsKilled}`)
 
     return { championId, playCount, timePlayed, winCount, championName, avgKills, avgAssists, avgDeaths, avgMinionsKilled };
   };  

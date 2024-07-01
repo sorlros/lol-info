@@ -11,7 +11,7 @@ export const ScrapeOpgg = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('/api/scrape-opgg', {
+        const response = await fetch('/api/league-info', {
           method: "GET"
         });
         if (!response.ok) {
@@ -31,6 +31,10 @@ export const ScrapeOpgg = () => {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    console.log("leagueInfo", teams)
+  }, [teams])
+
   if (isLoading) {
     return <div className='text-white'>Loading...</div>;
   }
@@ -44,7 +48,7 @@ export const ScrapeOpgg = () => {
       <h1>LCK Teams</h1>
       <ul>
         {teams.map((team, index) => (
-          <li key={index}>{team.teamName}</li>
+          <li key={index}>aasd</li>
         ))}
       </ul>
     </div>

@@ -52,7 +52,7 @@ export const TopInfo = ({puuid, gameName, tagLine}: TopInfoProps) => {
 
         const summonerData = await summonerResponse.json();
 
-        console.log("ASDASD", summonerData)
+        // console.log("ASDASD", summonerData)
 
         dispatch(setSummonerId({
           encryptedSummonerId: summonerData.id,

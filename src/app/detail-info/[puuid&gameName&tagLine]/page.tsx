@@ -30,7 +30,7 @@ const DetailPage = () => {
       const pathnames = parts.pop();
       if (pathnames) {
         const [puuid, gameName, tagLine] = pathnames.split("&");
-        console.log(":::::", puuid, gameName, tagLine)
+        // console.log(":::::", puuid, gameName, tagLine)
         if (puuid && gameName && tagLine) {
           setData({ 
             puuid, 
@@ -103,9 +103,9 @@ const DetailPage = () => {
     }
   }, [matchIds]);
 
-  useEffect(() => {
-    console.log("INFOS", matchInfos)
-  }, [matchInfos])
+  // useEffect(() => {
+  //   console.log("INFOS", matchInfos)
+  // }, [matchInfos])
 
   if (isLoading) {
     return (
