@@ -7,7 +7,7 @@ export default function Home() {
     <div className="flex w-full min-h-screen h-full flex-col items-center bg-black">
       <Header />
       <SummonerName />
-      <ScrapeOpgg />
+      {/* <ScrapeOpgg /> */}
     </div>
   );
 }

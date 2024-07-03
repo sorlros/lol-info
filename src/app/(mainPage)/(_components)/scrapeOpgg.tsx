@@ -4,7 +4,7 @@ import { TeamsProps } from '@/types/types';
 import { useEffect, useState } from 'react';
 
 export const ScrapeOpgg = () => {
-  const [teams, setTeams] = useState<TeamsProps[]>([]);
+  const [teams, setTeams] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
