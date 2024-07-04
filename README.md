@@ -1,36 +1,10 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+### 프로젝트소개
 
-## Getting Started
+- lol-info 웹사이트는 리그오브레전드 유저들의 이전 게임 정보들을 나타내는 op.gg와 같은 사이트들의 기능을 만들고 open api를 통해 얻은 데이터들을
+용도에 맞게 코드로 분류하고 사용해보기 위해 만들어진 웹사이트입니다. 해당 웹사이트에는 타입스크립트, 리액트 리덕스가 사용되었으며 UI를 위해 tailwindcss와 shadcn-ui가 사용되었습니다.
 
-First, run the development server:
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+### 구현된 기능
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+  
+- 유저의 인게임 닉네임과 태그넘버를 통해 특정 유저의 이전 플레이했던 게임들의 정보를 불러올수있으며 개인 환경에서의 제한된 성능으로 인해 최근 20게임동안 사용한 챔피언 목록만 나타나게끔 만들어졌습니다. 추후 LCK 일정을 메인페이지에 추가 할 예정입니다. 현재 해당 기능 구현을 위한 api를 얻기위해 신청한 상태입니다.
