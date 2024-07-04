@@ -25,7 +25,8 @@ export const RecentGames = ({matchInfos, puuid}: RecentGamesProps) => {
   }
 
   useEffect(() => {
-    setCurrentMatchInfos(matchInfos);
+    // setCurrentMatchInfos(matchInfos);
+    setCurrentMatchInfos(matchInfos.filter(matchInfo => matchInfo.info.gameMode === "CLASSIC"));
   }, [matchInfos]);
 
   useEffect(() => {
@@ -75,8 +76,10 @@ export const RecentGames = ({matchInfos, puuid}: RecentGamesProps) => {
               return data;
             })
           );
+          const filteredNewMatchData = newMatchData.filter(matchInfo => matchInfo.info.gameMode === "CLASSIC");
+
           setStart(prev => prev + 10);
-          setCurrentMatchInfos(prev => [...prev, ...newMatchData]);
+          setCurrentMatchInfos(prev => [...prev, ...filteredNewMatchData]);
         } catch (error) {
           console.error("새 매칭 정보 Promise.all 오류", error);
         } finally {

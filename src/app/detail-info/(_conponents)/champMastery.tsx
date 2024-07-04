@@ -8,6 +8,7 @@ import ChampMasterySkeleton from "@/components/skeleton/champMasterySkeleton";
 import { cn } from "@/lib/utils";
 interface MatchDetails {
   info: {
+    gameMode: string;
     participants: {
       puuid: string;
       championId: number;
@@ -66,11 +67,12 @@ const ChampMastery = () => {
   
   const fetchMatchDetails = async (matchId: string) => {
     try {
+      // console.log("현재 matchId", matchId)
       const response = await fetch(`/api/match-info/${matchId}`);
       if (!response.ok) {
         throw new Error("fetchMatchDetails response 오류");
       }
-      const data = (await response.json()) as MatchDetails;
+      const data: MatchDetails = await response.json();
       return data;
     } catch (error) {
       console.error("fetchMatchDetails 오류:", error);
@@ -83,7 +85,7 @@ const ChampMastery = () => {
     if (matchIds) {
       for (const matchId of matchIds) {
         const matchDetails = await fetchMatchDetails(matchId);
-        if (matchDetails) {
+        if (matchDetails && matchDetails.info.gameMode === "CLASSIC") {
           const participant = matchDetails.info.participants.find(p => p.puuid === puuid);
 
           if (participant) {

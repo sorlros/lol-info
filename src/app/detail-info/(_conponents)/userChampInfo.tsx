@@ -44,9 +44,9 @@ export const UserChampInfo = () => {
     }
   }, [summonerId]);
 
-  useEffect(() => {
-    console.log("tier", tierData)
-  }, [tierData])
+  // useEffect(() => {
+  //   console.log("tier", tierData)
+  // }, [tierData])
 
   if (isLoading || tierData === null) {
     return (
